@@ -15,6 +15,7 @@
         "quotes": [2, "single", "avoid-escape"],
         "no-underscore-dangle": 0,
         "semi": [2, "always"],
-        "comma-dangle": [2, "never"]
+        "comma-dangle": [2, "never"],
+        "no-unused-vars": 2
     }
 }

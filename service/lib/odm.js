@@ -3,7 +3,6 @@
 const Joi = require('joi');
 const _ = require('lodash');
 const bson = require('bson');
-const assert = require('assert');
 
 function isValidWriteResult(writeResult) {
   return writeResult.result &&
@@ -12,44 +11,41 @@ function isValidWriteResult(writeResult) {
     (writeResult.result.nModified > 0);
 }
 
-function extractResult(callback) {
-  return (err, writeResult) => {
-    if (err) {
-      return callback(err);
-    }
+function extractResult(writeResult) {
 
+  return new Promise((resolve, reject) => {
     if (!isValidWriteResult(writeResult)) {
-      return callback(new Error(JSON.stringify(writeResult.result)));
+      return reject(new Error(JSON.stringify(writeResult.result)));
     }
+    // TODO is it even possible for ops not to exist?
+    resolve(writeResult.ops ? writeResult.ops[0] : null);
+  });
+}
 
-    callback(null, writeResult.ops ? writeResult.ops[0] : null);
-  };
+function ensureId(fields) {
+  if (!fields.id) {
+    fields.id = new bson.ObjectId();
+  } else {
+    fields.id = new bson.ObjectId(String(fields.id));
+  }
+}
+
+function addTimestamps(fields, options) {
+  let now = new Date();
+  if (options.create) {
+    fields.createdAt = now;
+  }
+  fields.modifiedAt = now;
+}
+
+function removeMongoId(fields) {
+  delete fields._id;
 }
 
 module.exports = function(db) {
 
-  function ensureId(fields) {
-    if (!fields.id) {
-      fields.id = new bson.ObjectId();
-    } else {
-      fields.id = new bson.ObjectId(String(fields.id));
-    }
-  }
-
-  function addTimestamps(fields, options) {
-    let now = new Date();
-    if (options.create) {
-      fields.createdAt = now;
-    }
-    fields.modifiedAt = now;
-  }
-
-  function removeMongoId(fields) {
-    delete fields._id;
-  }
-
   function createModel(collectionName, baseSchema) {
-
+    // TODO move me
     function validateBase(fields) {
       return Joi.validate(
         _.omit(fields, ['id', '_id', 'createdAt', 'modifiedAt']),
@@ -59,7 +55,7 @@ module.exports = function(db) {
       ).error;
     }
 
-    let Model = function(fields) {
+    function Model(fields) {
       let err = validateBase(fields);
 
       if (err) {
@@ -74,200 +70,172 @@ module.exports = function(db) {
 
     Model._collection = db.collection(collectionName);
 
-    Model.all = function(limit, skip, callback) {
-      if (!callback) {
-        if (typeof skip === 'function') {
-          callback = skip;
-          skip = 0;
-        } else {
-          callback = limit;
+    Model.all = (limit, skip) => {
+      return new Promise((resolve, reject) => {
+
+        if (!limit && !skip) {
           limit = Infinity;
+        }
+
+        if (!skip) {
           skip = 0;
         }
-      }
 
-      let cursor = Model._collection.find({});
+        let cursor = Model._collection.find({});
 
-      if (skip) {
-        cursor = cursor.skip(skip);
-      }
-      if (limit) {
-        cursor = cursor.limit(limit);
-      }
-
-      cursor.toArray(function(err, raw) {
-        if (err) {
-          return callback(err);
+        if (skip) {
+          cursor = cursor.skip(skip);
         }
 
-        let mapped;
-        try {
-          mapped = raw.map(function(r) {
-            return new Model(r);
-          });
-        } catch (err) {
-          return callback(err);
+        if (limit) {
+          cursor = cursor.limit(limit);
         }
 
-        callback(null, mapped);
+        cursor.toArray((err, raw) => {
+          if (err) {
+            return reject(err);
+          }
+
+          let mapped;
+          try {
+            mapped = raw.map((r) => {
+              return new Model(r);
+            });
+          } catch (err) {
+            return reject(err);
+          }
+
+          resolve(mapped);
+        });
       });
     };
 
-    Model.find = function(query, callback) {
-      if (!callback) {
-        throw new Error('You need to call find with a callback');
-      }
-
+    Model.find = (query) => {
       if (!query || !_.isObject(query)) {
-        return setImmediate(function() {
-          callback(new Error('You need to call find with a mongo query'));
-        });
+        return Promise.reject(new Error('You need to call find with a mongo query'));
       }
 
-      Model._collection.find(query).toArray(function(err, raw) {
-        if (err) {
-          return callback(errors.mongo(err));
-        }
+      return new Promise((resolve, reject) => {
+        Model._collection.find(query).toArray((err, raw) => {
+          if (err) {
+            return reject(errors.mongo(err));
+          }
 
-        let models;
-        try {
-          models = raw.map(function(r) {
-            return new Model(r);
-          });
-        } catch (err) {
-          return callback(err);
-        }
+          let models;
+          try {
+            models = raw.map((r) => {
+              return new Model(r);
+            });
+          } catch (err) {
+            return reject(err);
+          }
 
-        return callback(null, models);
+          return resolve(models);
+        });
       });
     };
 
-    Model.findOne = function(query, callback) {
-      Model._collection.findOne(query, function(err, raw) {
-        if (err) {
-          return callback(err);
-        }
+    Model.findOne = function(query) {
+      return Model._collection.findOne(query)
+        .then((raw) => {
+          if (!raw) {
+            return null;
+          }
 
-        if (!raw) {
-          return callback(null, null);
-        }
-
-        let mapped;
-        try {
-          mapped = new Model(raw);
-        } catch (err) {
-          return callback(err);
-        }
-
-        callback(null, mapped);
-      });
+          return new Model(raw);
+        });
     };
 
-    Model.findById = function(id, callback) {
+    Model.findById = function(id) {
       if (!id) {
-        return setImmediate(function() {
-          callback(new Error('You need to call findById with an id'));
-        });
+        Promise.reject(new Error('You need to call findById with an id'));
       }
 
-      let oid;
-      try {
-        oid = new bson.ObjectId(String(id));
-      } catch (err) {
-        return setImmediate(function() {
-          callback(err);
-        });
-      }
-
-      Model.findOne({
-        id: oid
-      }, callback);
+      return new Promise((resolve) => {
+          return resolve({
+            id: new bson.ObjectId(String(id))
+          });
+        })
+        .then(Model.findOne);
     };
 
-    Model.prototype.save = function(callback) {
+    Model.prototype.save = function() {
       let self = this;
 
-      let err = validateBase(self.fields);
+      return new Promise((resolve, reject) => {
+        let err = validateBase(self.fields);
 
-      if (err) {
-        return setImmediate(function() {
-          callback(err);
-        });
-      }
-
-      addTimestamps(self.fields, {
-        create: true
-      });
-      self.fields.id = new bson.ObjectId();
-
-      Model._collection.save(self.fields, extractResult(function(err, result) {
         if (err) {
-          return callback(err);
+          return reject(err);
         }
 
-        self.fields = result;
-        removeMongoId(self.fields);
+        addTimestamps(self.fields, {
+          create: true
+        });
 
-        callback(null, self);
-      }));
+        self.fields.id = new bson.ObjectId();
+
+        Model._collection.save(self.fields)
+          .then(extractResult)
+          .then((result) => {
+            self.fields = result;
+            removeMongoId(self.fields);
+            resolve(self);
+          });
+      });
     };
 
-    Model.prototype.update = function(fields, callback) {
+    Model.prototype.update = function(fields) {
       let self = this;
 
-      let newFields = _.assign({},
-        self.fields,
-        fields, {
-          id: self.fields.id,
-          createdAt: self.fields.createdAt
-        }
-      );
+      return new Promise((resolve, reject) => {
+        let newFields = _.assign({},
+          self.fields,
+          fields, {
+            id: self.fields.id,
+            createdAt: self.fields.createdAt
+          }
+        );
 
-      let err = validateBase(newFields);
+        let err = validateBase(newFields);
 
-      if (err) {
-        return setImmediate(function() {
-          callback(err);
-        });
-      }
-
-      if (!newFields.id) {
-        err = errors.asBoom('Model does not have an id!');
-        return setImmediate(function() {
-          callback(err);
-        });
-      }
-
-      ensureId(newFields);
-      addTimestamps(newFields, {
-        create: false
-      });
-
-      self.fields = newFields;
-
-      Model._collection.updateOne({
-        id: self.fields.id
-      }, {
-        $set: self.fields
-      }, {
-        upsert: false
-      }, extractResult(function(err, result) {
         if (err) {
-          return callback(err);
+          return reject(err);
         }
 
-        removeMongoId(self.fields);
+        if (!newFields.id) {
+          err = new Error('Model does not have an id!');
+          return reject(err);
+        }
 
-        callback(null, self);
-      }));
+        ensureId(newFields);
+        addTimestamps(newFields, {
+          create: false
+        });
+
+        self.fields = newFields;
+
+        Model._collection.updateOne({
+          id: self.fields.id
+        }, {
+          $set: self.fields
+        }, {
+          upsert: false
+        })
+        .then(extractResult)
+        .then(() => {
+          removeMongoId(self.fields);
+          return resolve(self);
+        });
+      });
     };
 
-    Model.prototype.delete = function(callback) {
+    Model.prototype.delete = function() {
       // TODO: Validate that id is in fields
       // TODO: Clean up model when done?
-      Model._collection.remove({
+      return Model._collection.remove({
         id: this.fields.id
-      }, callback);
+      });
     };
 
     return Model;
