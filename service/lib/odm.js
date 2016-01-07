@@ -4,6 +4,10 @@ const Joi = require('joi');
 const _ = require('lodash');
 const bson = require('bson');
 
+exports.Joi = Joi;
+
+let internals = exports.internals = {};
+
 function isValidWriteResult(writeResult) {
   return writeResult.result &&
     writeResult.result.ok &&
@@ -42,7 +46,7 @@ function removeMongoId(fields) {
   delete fields._id;
 }
 
-module.exports = function(db) {
+internals.odm = (db) => {
 
   function createModel(collectionName, baseSchema) {
     // TODO move me
@@ -246,4 +250,9 @@ module.exports = function(db) {
   };
 };
 
-module.exports.Joi = Joi;
+
+exports.connect = (mongoStr) => {
+  mongoStr = mongoStr || 'mongodb://localhost:27017/blog-service';
+  return mongodb.MongoClient.connect(mongoString)
+    .then(internals.odm);
+};

@@ -9,8 +9,8 @@ const should = chai.Should();
 const mongodb = require('mongodb');
 const _ = require('lodash');
 
-const albatross = require('../lib/odm');
-const Joi = albatross.Joi;
+const Odm = require('../lib/odm');
+const Joi = Odm.Joi;
 
 const MONGO_CONNSTRING = process.env.NODE_MONGODB || 'mongodb://localhost/odm-test';
 
@@ -27,7 +27,7 @@ describe('odm', () => {
       db = _db;
 
       try {
-        odm = albatross(db);
+        odm = Odm.internals.odm(db);
         Model = odm.createModel('test_model', {
           someStringProperty: Joi.string(),
           someNumberProperty: Joi.number().integer()
