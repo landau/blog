@@ -1,0 +1,20 @@
+{
+    "env": {
+        "node": "true",
+        "mocha": "true",
+        "es6": "true"
+    },
+    "globals": {
+        "describe": true,
+        "expect": true,
+        "it": true,
+        "jest": true
+    },
+    "rules": {
+        "camelcase": 0,
+        "quotes": [2, "single", "avoid-escape"],
+        "no-underscore-dangle": 0,
+        "semi": [2, "always"],
+        "comma-dangle": [2, "never"]
+    }
+}
