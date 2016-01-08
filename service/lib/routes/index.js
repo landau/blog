@@ -1,5 +1,6 @@
 'use strict';
 
 module.exports = [
-  require('./ping')
+  require('./ping'),
+  require('./article')
 ];

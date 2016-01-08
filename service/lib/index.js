@@ -11,7 +11,7 @@ module.exports = () => {
     .then(createArticleModel)
     .then(function(Article) {
       server.app.Article = Article;
-      routes.forEach((r) => r(server));
+      routes.forEach((r) => r(server)); // FIXME if this throws then the promise isn't being thrown...why
       return server;
     });
 };

@@ -244,6 +244,7 @@ internals.odm = function(db) {
       });
     };
 
+    Model.schema = baseSchema;
     return Model;
   }
 

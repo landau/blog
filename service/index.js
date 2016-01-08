@@ -12,6 +12,7 @@ if (require.main === module) {
   app().then((server) => {
       _server = server;
 
+      // TODO why isn't this working as a promise?
       server.start((err) => {
         if (err) {
           _server.app.log.error(err);
@@ -21,5 +22,5 @@ if (require.main === module) {
         _server.app.logger.info(`Server started on ${server.info.uri}`);
       });
     })
-    .catch(require('assert'));
+    .catch(require('assert').ifError);
 }

@@ -35,4 +35,6 @@ server.connection({
   }
 });
 
+logging.attach(server);
+
 module.exports = server;
