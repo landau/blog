@@ -35,14 +35,14 @@ internals.save = (request, reply) => {
   const Article = request.server.app.Article;
   const payload = request.payload;
   let article = new Article(payload);
-  reply(article.save().then(_.property('fields')));
+  reply(article.save().then(_.property('fields'))).code(201);
 };
 
 internals.update = (request, reply) => {
   const Article = request.server.app.Article;
   const payload = request.payload;
 
-  let p = Article.findById(id)
+  let p = Article.findById(request.params.id)
     .then((article) => {
       if (!article) {
         return boom.notFound(`Article not found with id ${id}`, request.params);
@@ -73,6 +73,8 @@ internals.findPublished = (request, reply) => {
 };
 
 module.exports = (server) => {
+  const JOI_ID = Joi.string().regex(/^[a-zA-Z0-9]{24}$/);
+
   // -- Find routes
   server.route({
     method: 'GET',
@@ -95,7 +97,7 @@ module.exports = (server) => {
     config: {
       validate: {
         params: {
-          id: Joi.string().regex(/^[a-zA-Z0-9]{24}$/)
+          id: JOI_ID
         }
       },
       handler: internals.findById,
@@ -109,7 +111,7 @@ module.exports = (server) => {
     config: {
       validate: {
         query: Joi.object().keys({
-          id: Joi.string(),
+          id: JOI_ID,
           uri: createArticle.internals.schema.uri
         }).xor('id', 'uri')
       },
@@ -136,6 +138,9 @@ module.exports = (server) => {
     path: '/articles/{id}',
     config: {
       validate: {
+        params: {
+          id: JOI_ID
+        },
         payload: createArticle.internals.schema
       },
       handler: internals.update,

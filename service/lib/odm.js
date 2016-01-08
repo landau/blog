@@ -142,6 +142,10 @@ internals.odm = function(db) {
     };
 
     Model.findOne = function(query) {
+      if (query.id && typeof query.id === 'string') {
+        query.id = new bson.ObjectId(query.id);
+      }
+
       return Model._collection.findOne(query)
         .then((raw) => {
           if (!raw) {
@@ -242,6 +246,12 @@ internals.odm = function(db) {
       return Model._collection.remove({
         id: this.fields.id
       });
+    };
+
+    Model.prototype.toJSON = () => {
+      let fields = _.cloneDeep(this.fields);
+      fields.id = fields.id.toString();
+      return fields;
     };
 
     Model.schema = baseSchema;
