@@ -15,7 +15,7 @@ if (require.main === module) {
       // TODO why isn't this working as a promise?
       server.start((err) => {
         if (err) {
-          _server.app.log.error(err);
+          _server.app.logger.error(err);
           throw err;
         }
 
