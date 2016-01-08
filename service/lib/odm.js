@@ -3,6 +3,7 @@
 const Joi = require('joi');
 const _ = require('lodash');
 const bson = require('bson');
+const mongodb = require('mongodb');
 
 exports.Joi = Joi;
 
@@ -46,9 +47,10 @@ function removeMongoId(fields) {
   delete fields._id;
 }
 
-internals.odm = (db) => {
+internals.odm = function(db) {
 
   function createModel(collectionName, baseSchema) {
+
     // TODO move me
     function validateBase(fields) {
       return Joi.validate(
@@ -114,7 +116,7 @@ internals.odm = (db) => {
       });
     };
 
-    Model.find = (query) => {
+    Model.find = function(query) {
       if (!query || !_.isObject(query)) {
         return Promise.reject(new Error('You need to call find with a mongo query'));
       }
@@ -253,6 +255,7 @@ internals.odm = (db) => {
 
 exports.connect = (mongoStr) => {
   mongoStr = mongoStr || 'mongodb://localhost:27017/blog-service';
-  return mongodb.MongoClient.connect(mongoString)
+
+  return mongodb.MongoClient.connect(mongoStr)
     .then(internals.odm);
 };
