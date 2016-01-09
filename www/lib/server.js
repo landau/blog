@@ -1,5 +1,6 @@
 'use strict';
 
+const assert = require('assert');
 const path = require('path');
 const Hapi = require('hapi');
 const config = require('./config');
@@ -16,14 +17,16 @@ const server = new Hapi.Server({
   }
 });
 
+// -- App vars
 server.app = {
   version: require('../package.json').version,
   config: config,
   logger: logging.logger
 };
 
+// -- Setup hapi-react
 server.register(require('vision'), (err) => {
-  require('assert').ifError(err);
+  assert.ifError(err);
 
   server.views({
     defaultExtension: 'jsx',
@@ -34,9 +37,9 @@ server.register(require('vision'), (err) => {
     relativeTo: __dirname,
     path: 'views'
   });
-
 });
 
+// -- Server config
 server.connection({
   port: config.port,
   routes: {
@@ -48,6 +51,23 @@ server.connection({
     }
   }
 });
+
+// -- Server static files when not prod
+if (config.env !== 'production') {
+  server.register(require('inert'), (err) => {
+    assert.ifError(err);
+
+    server.route({
+      method: 'GET',
+      path: '/{param*}', // Does this need to be /public?
+      handler: {
+        directory: {
+          path: 'public'
+        }
+      }
+    });
+  });
+}
 
 logging.attach(server);
 
