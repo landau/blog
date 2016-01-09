@@ -3,7 +3,15 @@
 let internals = {};
 
 internals.home = (request, reply) => {
-  reply({ ok: true });
+  reply.view('index', {
+    articles: [{
+      hed: 'foo',
+      dek: 'bar',
+      body: 'i need to rendered from markdown',
+      published: true,
+      uri: 'todo-i-need-to-be-rendered-from-markdown'
+    }]
+  });
 };
 
 module.exports = (server) => {
