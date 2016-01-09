@@ -1,0 +1,48 @@
+{
+  "name": "www",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Blog front end",
+  "main": "index.js",
+  "scripts": {
+    "build": "",
+    "open": "opener ./coverage/lcov-report/index.js",
+    "coverage": "istanbul cover _mocha --recursive test/ && npm run open",
+    "pretest": "eslint -c .eslintrc index.js lib/ test/",
+    "test": "mocha -R spec --recursive ./test",
+    "start": "node . | bunyan"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/landau/blog.git"
+  },
+  "author": "Trevor Landau",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/landau/blog/issues"
+  },
+  "homepage": "https://github.com/landau/blog#readme",
+  "dependencies": {
+    "boom": "3.1.1",
+    "hapi": "12.0.1",
+    "hapi-react": "4.0.0",
+    "joi": "7.1.0",
+    "lodash": "3.10.1",
+    "predicate": "0.12.0",
+    "react": "0.14.6",
+    "react-dom": "0.14.6",
+    "request-promise": "1.0.2",
+    "vision": "4.0.1"
+  },
+  "devDependencies": {
+    "bunyan": "1.5.1",
+    "chai": "3.4.1",
+    "eslint": "1.10.3",
+    "istanbul": "0.4.1",
+    "mocha": "2.3.4",
+    "nock": "5.2.1",
+    "opener": "1.4.1",
+    "sinon": "1.17.2",
+    "sinon-chai": "2.8.0"
+  }
+}
