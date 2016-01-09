@@ -16,6 +16,21 @@ internals.home = (request, reply) => {
   });
 };
 
+internals.post = (request, reply) => {
+  reply.view('article', {
+    article: {
+      hed: 'foo',
+      dek: 'bar',
+      body: 'i need to rendered from markdown. i need to rendered from markdown. i need to rendered from markdown. i need to rendered from markdown.',
+      published: true,
+      uri: 'todo-i-need-to-be-rendered-from-markdown',
+      createdAt: new Date().toISOString(),
+      modifiedAt: new Date().toISOString()
+    }
+  });
+};
+
+
 module.exports = (server) => {
   // -- ping
   server.route({
@@ -39,6 +54,16 @@ module.exports = (server) => {
     config: {
       handler: internals.home,
       tags: ['root', 'home']
+    }
+  });
+
+  // -- /post
+  server.route({
+    method: 'GET',
+    path: '/post/{uri}',
+    config: {
+      handler: internals.post,
+      tags: ['article', 'post']
     }
   });
 
