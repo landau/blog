@@ -3,11 +3,8 @@
 const React = require('react');
 const Layout = require('./layout.jsx');
 const Footer = require('./footer.jsx');
-
-//<!-- Page Header -->
-//<!-- Set your background image for this header on the line below. -->
-
-//
+const moment = require('moment');
+const toHtml = require('../utils').toHtml;
 
 class Header extends React.Component {
   render() {
@@ -31,30 +28,39 @@ class Header extends React.Component {
 
 class ArticlePreview extends React.Component {
   render() {
+    const MAX_BODY_LEN = 120;
+    let body = this.props.article.body;
+
+    if (body.length > MAX_BODY_LEN) {
+      body = `${body.slice(0, MAX_BODY_LEN - 3)}...`;
+    }
+
     return (
       <div className="post-preview">
         <a href="post.html">
           <h2 className="post-title">
-            Man must explore, and this is exploration at its greatest
+            {this.props.article.hed}
           </h2>
           <h3 className="post-subtitle">
-            Problems look mighty small from 150 miles up
+            {this.props.article.dek}
           </h3>
+          <p className="post-subtitle" dangerouslySetInnerHTML={{__html: toHtml(body) }}></p>
         </a>
         <p className="post-meta">
-          Posted by
-          <a href="#">Start Bootstrap</a>
-          on September 24, 2014
+          Posted on {moment(this.props.article.modifiedAt).format('MMMM D, YYYY')}
         </p>
       </div>
     );
   }
 }
-// use <hr> to separate Article Preview
 
 class ArticlePreviewList extends React.Component {
   render() {
-    let articles = this.props.articles.map((a) => <ArticlePreview article={a}/>);
+    let articles = this.props.articles
+      .map((a) => <ArticlePreview article={a}/>)
+      .reduce((articles, article) => {
+        return articles.concat(article, <hr />); // separate articles by hr
+      }, []);
 
     return (
       <div className="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -81,7 +87,6 @@ class Home extends React.Component {
         </div>
         <hr/>
         <Footer/>
-
       </Layout>
     );
   }

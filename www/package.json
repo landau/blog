@@ -24,11 +24,13 @@
   "homepage": "https://github.com/landau/blog#readme",
   "dependencies": {
     "boom": "3.1.1",
+    "commonmark": "0.23.0",
     "hapi": "12.0.1",
     "hapi-react": "4.0.0",
     "inert": "3.2.0",
     "joi": "7.1.0",
     "lodash": "3.10.1",
+    "moment": "2.11.1",
     "predicate": "0.12.0",
     "react": "0.14.6",
     "react-dom": "0.14.6",

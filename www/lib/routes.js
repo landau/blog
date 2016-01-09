@@ -7,9 +7,11 @@ internals.home = (request, reply) => {
     articles: [{
       hed: 'foo',
       dek: 'bar',
-      body: 'i need to rendered from markdown',
+      body: 'i need to rendered from markdown. i need to rendered from markdown. i need to rendered from markdown. i need to rendered from markdown.',
       published: true,
-      uri: 'todo-i-need-to-be-rendered-from-markdown'
+      uri: 'todo-i-need-to-be-rendered-from-markdown',
+      createdAt: new Date().toISOString(),
+      modifiedAt: new Date().toISOString()
     }]
   });
 };

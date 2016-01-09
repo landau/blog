@@ -55,9 +55,8 @@ internals.odm = function(db) {
     function validateBase(fields) {
       return Joi.validate(
         _.omit(fields, ['id', '_id', 'createdAt', 'modifiedAt']),
-        baseSchema, {
-          convert: false
-        }
+        baseSchema,
+        { convert: false }
       ).error;
     }
 
