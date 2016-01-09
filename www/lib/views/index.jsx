@@ -14,9 +14,9 @@ class Header extends React.Component {
           <div className="row">
             <div className="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
               <div className="site-heading">
-                <h1>Clean Blog</h1>
+                <h1>{this.props.title}</h1>
                 <hr className="small"/>
-                <span className="subheading">A Clean Blog Theme by Start Bootstrap</span>
+                <span className="subheading">{this.props.subtitle}</span>
               </div>
             </div>
           </div>
@@ -79,7 +79,7 @@ class Home extends React.Component {
   render() {
     return (
       <Layout>
-        <Header/>
+        <Header title='Blog' subtitle='Random thoughts and such...'/>
         <div className="container">
           <div className="row">
             <ArticlePreviewList articles={this.props.articles}/>
