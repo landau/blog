@@ -5,5 +5,5 @@ module.exports = {
   debug: process.env.NODE_DEBUG || false,
   env: process.env.NODE_ENV || 'development',
   port: process.env.NODE_PORT || 8083,
-  serviceurl: process.env.NODE_SERVICEURL || 'http://localhost:8081'
+  serviceurl: process.env.NODE_SERVICEURL || 'http://localhost:8100'
 };

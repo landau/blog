@@ -13,7 +13,7 @@ describe('Integration: Routes', () => {
   before((done) => {
     app()
       .then((s) => server = s)
-      .then(() => server.app.logger.level('none'))
+      .then(() => server.app.logger.level('error'))
       .then(done.bind(null, null))
       .catch(done);
   });
@@ -36,7 +36,8 @@ describe('Integration: Routes', () => {
   describe('index', () => {
     it('should reply with html', (done) => {
       nock(server.app.config.serviceurl)
-        .get('/articles')
+        .get('/articles/published/latest')
+        .query({ limit: 4 })
         .reply(200, [fixtures.article, fixtures.publishedArticle]);
 
       server.inject({
@@ -51,14 +52,33 @@ describe('Integration: Routes', () => {
     });
   });
 
-  describe('/post', () => {
-    it('should reply with html', (done) => {
+  describe('index', () => {
+    it('should reply with html on page 2', (done) => {
       nock(server.app.config.serviceurl)
-        .get('/articles')
+        .get('/articles/published/latest')
+        .query({ skip: 1, limit: 4 })
         .reply(200, [fixtures.article, fixtures.publishedArticle]);
 
       server.inject({
-        url: '/'
+        url: '/?page=2'
+      }, (res) => {
+        if (res.statusCode !== 200) {
+          return done(new Error(`Expected a 200. Got ${res.statusCode} ${JSON.stringify(res.result.message)}`));
+        }
+        res.result.should.be.a.string;
+        done();
+      });
+    });
+  });
+
+  describe('/post/{uri}', () => {
+    it('should reply with html', (done) => {
+      nock(server.app.config.serviceurl)
+        .get(`/articles/published?uri=${fixtures.publishedArticle.uri}`)
+        .reply(200, fixtures.publishedArticle);
+
+      server.inject({
+        url: `/post/${fixtures.publishedArticle.uri}`
       }, (res) => {
         if (res.statusCode !== 200) {
           return done(new Error(`Expected a 200. Got ${res.statusCode} ${JSON.stringify(res.result.message)}`));

@@ -18,14 +18,13 @@ class ArticlePreview extends React.Component {
 
     return (
       <div className="post-preview">
-        <a href="post.html">
+        <a href={`/post/${this.props.article.uri}`}>
           <h2 className="post-title">
             {this.props.article.hed}
           </h2>
           <h3 className="post-subtitle">
             {this.props.article.dek}
           </h3>
-          <p className="post-subtitle" dangerouslySetInnerHTML={{__html: toHtml(body) }}></p>
         </a>
         <p className="post-meta">
           Posted on {moment(this.props.article.modifiedAt).format('MMMM D, YYYY')}
@@ -48,7 +47,7 @@ class ArticlePreviewList extends React.Component {
         {articles}
         <ul className="pager">
           <li className="next">
-            <a href="#">Older Posts &rarr;</a>
+            <a href={`/?page=${this.props.nextPage}`}>Older Posts &rarr;</a>
           </li>
         </ul>
       </div>
@@ -63,7 +62,7 @@ class Home extends React.Component {
         <Header title='Blog' subtitle='Random thoughts and such...'/>
         <div className="container">
           <div className="row">
-            <ArticlePreviewList articles={this.props.articles}/>
+            <ArticlePreviewList articles={this.props.articles} nextPage={this.props.nextPage}/>
           </div>
         </div>
         <hr/>
