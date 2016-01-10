@@ -1,7 +1,6 @@
 'use strict';
 
 const assert = require('assert');
-const path = require('path');
 const Hapi = require('hapi');
 const config = require('./config');
 const logging = require('./logging');

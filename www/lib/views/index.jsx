@@ -38,9 +38,9 @@ class ArticlePreview extends React.Component {
 class ArticlePreviewList extends React.Component {
   render() {
     let articles = this.props.articles
-      .map((a) => <ArticlePreview article={a}/>)
+      .map((a) => <ArticlePreview article={a} key={a.id}/>)
       .reduce((articles, article) => {
-        return articles.concat(article, <hr />); // separate articles by hr
+        return articles.concat(article, <hr key={'hr' + article.props.article.id} />); // separate articles by hr
       }, []);
 
     return (
