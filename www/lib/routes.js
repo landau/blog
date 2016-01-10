@@ -41,8 +41,7 @@ module.exports = (server) => {
     config: {
       handler: (request, reply) => {
         reply({
-          version: request.server.app.version,
-          config: request.server.app.config
+          version: request.server.app.version
         });
       },
       tags: ['healthcheck', 'ping']
