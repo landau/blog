@@ -40,7 +40,8 @@ internals.post = (req, reply) => {
 
   request(opts).then((article) => {
       reply.view('article', {
-        article: article
+        article: article,
+        live: false
       });
     })
     .catch(reply);

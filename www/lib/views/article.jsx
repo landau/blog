@@ -27,6 +27,10 @@ class Article extends React.Component {
     this.props.onChangeUri(e.target.value);
   }
 
+  onSave (e) {
+    this.props.onSave();
+  }
+
   renderEdit () {
     // TODO: add tags
 
@@ -53,6 +57,7 @@ class Article extends React.Component {
               <textarea rows="20" className={CONTENT_CLASSNAMES} onChange={this.onContentChange} defaultValue={body}></textarea>
             </div>
           </div>
+          <button type="button" className="btn btn-primary" onClick={this.onSave}>Save</button>
         </article>
         <Footer/>
       </Layout>
@@ -83,5 +88,15 @@ class Article extends React.Component {
   }
 }
 
-Article.defaultProps = {isLive: true, onContentChange: _.noop, onPublish: _.noop, onChangeUri: _.noop};
+Article.defaultProps = [
+  'onSave',
+  'onContentChange',
+  'onPublish',
+  'onChangeUri'
+].reduce((props, methodName) => {
+  props[methodName] = _.noop;
+  return props;
+}, {});
+
+Article.defaultProps.isLive = true;
 module.exports = Article;
