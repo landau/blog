@@ -71,7 +71,7 @@ class Layout extends React.Component {
   render() {
     return (
       <html lang="en">
-        <Head title={this.props.title}/>
+        <Head title={this.props.title} />
         <body>
           <Nav/>
           {this.props.children}
