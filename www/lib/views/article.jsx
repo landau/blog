@@ -15,57 +15,58 @@ const _ = require('lodash');
 const CONTENT_CLASSNAMES = 'col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1';
 
 class Article extends React.Component {
-  onContentChange (e) {
-    this.props.onContentChange(e.target.value);
-  }
-
-  onPublish (e) {
-    this.props.onPublish(e.target.value);
-  }
-
-  onChangeUri (e) {
-    this.props.onChangeUri(e.target.value);
-  }
-
-  onSave (e) {
-    this.props.onSave();
-  }
-
   renderEdit () {
     // TODO: add tags
+    // TODO: add form
+    // TODO: disable changing uri
+    const article = this.props.article;
 
-    let body = this.props.article.body;
+    let method = 'post';
+    let action = '/admin/post';
+
+    if (article.id) {
+      method = 'put';
+      action = `${action}/${article.id}`;
+    }
 
     return (
-      <Layout title={this.props.article.hed}>
-        <Header title={this.props.article.hed} subtitle={this.props.article.dek} isLive={this.props.isLive}/>
+      <Layout title={article.hed}>
+        <form method={method} action={action}>
+          <Header title={article.hed} subtitle={article.dek} isLive={this.props.isLive}/>
+          <article>
+            <div className="container">
+              <div className="row">
+                <div className={`btn-group`}>
+                  <button type="submit" className="btn btn-primary btn-sm">Save</button>
+                </div>
+                <div className={`input-group ${CONTENT_CLASSNAMES}`}>
+                  <span className="input-group-addon">URI</span>
+                  <input type="text" className="form-control" placeholder="something" value={article.uri} name="uri" />
+                </div>
 
-        <article>
-          <div className="container">
-            <div className="row">
-              <div className={`input-group ${CONTENT_CLASSNAMES}`}>
-                <span className="input-group-addon">URI</span>
-                <input type="text" className="form-control" placeholder="something" value={this.props.uri} onChange={this.onChangeUri}/>
+                <div className={`checkbox ${CONTENT_CLASSNAMES}`}>
+                  <label><input type="checkbox" checked={article.published} name="published" /> Published</label>
+                </div>
               </div>
-
-              <div className={`checkbox ${CONTENT_CLASSNAMES}`}>
-                <label><input type="checkbox" checked={this.props.article.published} onChange={this.onPublish} /> Published</label>
+              <hr/>
+              <div className="row">
+                <textarea rows="20" className={CONTENT_CLASSNAMES} defaultValue={article.body} name="body"></textarea>
+              </div>
+              <div className="row">
+                <div className={`btn-group`}>
+                  <button type="submit" className="btn btn-primary btn-sm">Save</button>
+                </div>
               </div>
             </div>
-            <hr/>
-            <div className="row">
-              <textarea rows="20" className={CONTENT_CLASSNAMES} onChange={this.onContentChange} defaultValue={body}></textarea>
-            </div>
-          </div>
-          <button type="button" className="btn btn-primary" onClick={this.onSave}>Save</button>
-        </article>
+          </article>
+        </form>
         <Footer/>
       </Layout>
     );
   }
   renderLive () {
     const html = {
-      __html: toHtml(this.props.article.body)
+      __html: toHtml(this.props.article.body || '')
     };
 
     return (
@@ -88,15 +89,5 @@ class Article extends React.Component {
   }
 }
 
-Article.defaultProps = [
-  'onSave',
-  'onContentChange',
-  'onPublish',
-  'onChangeUri'
-].reduce((props, methodName) => {
-  props[methodName] = _.noop;
-  return props;
-}, {});
-
-Article.defaultProps.isLive = true;
+Article.defaultProps = { isLive: true };
 module.exports = Article;

@@ -4,21 +4,13 @@ const React = require('react');
 const _ = require('lodash');
 
 class Header extends React.Component {
-  onChangeHed(e) {
-    this.props.onChangeHed(e.target.value);
-  }
-
-  onChangeDek(e) {
-    this.props.onChangeDek(e.target.value);
-  }
-
   renderEdit() {
     return (
       <div className="site-heading">
-        <h1><input type="text" onChange={this.onChangeHed} value={this.props.title}/></h1>
+        <h1><input type="text" value={this.props.title} name="hed"/></h1>
         <hr className="small"/>
         <span className="subheading">
-          <input type="text" onChange={this.onChangeDek} value={this.props.subtitle}/>
+          <input type="text" value={this.props.subtitle} name="dek"/>
         </span>
       </div>
     );
