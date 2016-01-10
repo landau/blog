@@ -11,7 +11,7 @@ internals.schema = {
   dek: Joi.string(),
   body: Joi.string().required(),
   tags: Joi.array().items(Joi.string()),
-  uri: Joi.string(),
+  uri: Joi.string().regex(/^[a-z0-9-]+$/),
   published: Joi.boolean()
 };
 

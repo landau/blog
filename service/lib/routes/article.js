@@ -74,6 +74,7 @@ internals.findPublished = (request, reply) => {
 
 module.exports = (server) => {
   const JOI_ID = Joi.string().regex(/^[a-zA-Z0-9]{24}$/);
+  const JOI_PUBLISHED = createArticle.internals.schema.uri;
 
   // -- Find routes
   server.route({
@@ -112,7 +113,7 @@ module.exports = (server) => {
       validate: {
         query: Joi.object().keys({
           id: JOI_ID,
-          uri: createArticle.internals.schema.uri
+          uri: JOI_PUBLISHED
         }).xor('id', 'uri')
       },
       handler: internals.findPublished,
