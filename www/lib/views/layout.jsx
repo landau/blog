@@ -57,7 +57,7 @@ class Head extends React.Component {
         <title>{this._getTitle()}</title>
 
         <link href="/css/bootstrap.min.css" rel="stylesheet"/>
-        <link href="/css/clean-blog.min.css" rel="stylesheet"/>
+        <link href="/css/clean-blog.css" rel="stylesheet"/>
 
         <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
         <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'/>
