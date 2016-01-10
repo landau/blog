@@ -15,22 +15,16 @@ class Nav extends React.Component {
               <span className="icon-bar"></span>
               <span className="icon-bar"></span>
             </button>
-            <a className="navbar-brand" href="index.html">Start Bootstrap</a>
+            <a className="navbar-brand" href="index.html">{this.props.title || ''}</a>
           </div>
 
           <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul className="nav navbar-nav navbar-right">
               <li>
-                <a href="index.html">Home</a>
+                <a href="/">Home</a>
               </li>
               <li>
-                <a href="about.html">About</a>
-              </li>
-              <li>
-                <a href="post.html">Sample Post</a>
-              </li>
-              <li>
-                <a href="contact.html">Contact</a>
+                <a href="/about">About</a>
               </li>
             </ul>
           </div>
@@ -41,6 +35,16 @@ class Nav extends React.Component {
 }
 
 class Head extends React.Component {
+  _getTitle() {
+    let title = 'Blog';
+
+    if (this.props.title) {
+      title = `${this.props.title} | ${title}`
+    }
+
+    return title;
+  }
+
   render() {
     return (
       <head>
@@ -50,7 +54,7 @@ class Head extends React.Component {
         <meta name="description" content=""/>
         <meta name="author" content=""/>
 
-        <title>Blog</title>
+        <title>{this._getTitle()}</title>
 
         <link href="/css/bootstrap.min.css" rel="stylesheet"/>
         <link href="/css/clean-blog.min.css" rel="stylesheet"/>
@@ -67,7 +71,7 @@ class Layout extends React.Component {
   render() {
     return (
       <html lang="en">
-        <Head />
+        <Head title={this.props.title}/>
         <body>
           <Nav/>
           {this.props.children}

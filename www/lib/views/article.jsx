@@ -14,7 +14,7 @@ const toHtml = require('../utils').toHtml;
 class Article extends React.Component {
   render() {
     return (
-      <Layout>
+      <Layout title={this.props.article.hed}>
         <Header title={this.props.article.hed} subtitle={this.props.article.dek}/>
         <article>
           <div className="container">

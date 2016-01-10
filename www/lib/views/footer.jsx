@@ -1,6 +1,22 @@
 'use strict';
 
 const React = require('react');
+const moment = require('moment');
+
+class Badge extends React.Component {
+  render() {
+    return (
+      <li>
+        <a href={this.props.href} target="_blank">
+          <span className="fa-stack fa-lg">
+            <i className="fa fa-circle fa-stack-2x"></i>
+            <i className={`fa fa-${this.props.icon} fa-stack-1x fa-inverse`}></i>
+          </span>
+        </a>
+      </li>
+    );
+  }
+}
 
 class Footer extends React.Component {
   render() {
@@ -9,33 +25,14 @@ class Footer extends React.Component {
         <div className="container">
           <div className="row">
             <div className="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+              <p className="text-center"></p>
               <ul className="list-inline text-center">
-                <li>
-                  <a href="#">
-                    <span className="fa-stack fa-lg">
-                      <i className="fa fa-circle fa-stack-2x"></i>
-                      <i className="fa fa-twitter fa-stack-1x fa-inverse"></i>
-                    </span>
-                  </a>
-                </li>
-                <li>
-                  <a href="#">
-                    <span className="fa-stack fa-lg">
-                      <i className="fa fa-circle fa-stack-2x"></i>
-                      <i className="fa fa-facebook fa-stack-1x fa-inverse"></i>
-                    </span>
-                  </a>
-                </li>
-                <li>
-                  <a href="#">
-                    <span className="fa-stack fa-lg">
-                      <i className="fa fa-circle fa-stack-2x"></i>
-                      <i className="fa fa-github fa-stack-1x fa-inverse"></i>
-                    </span>
-                  </a>
-                </li>
+                <Badge href="http://www.github.com/landau" icon="github"/>
+                <Badge href="https://www.linkedin.com/in/trevor-landau-493a481b" icon="linkedin"/>
               </ul>
-              <p className="copyright text-muted">Copyright &copy; Your Website 2014</p>
+              <p className="copyright text-muted">
+                <a href="/">Home</a> | Copyright &copy; Trevor Landau {moment().format('YYYY')}
+              </p>
             </div>
           </div>
         </div>
