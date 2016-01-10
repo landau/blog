@@ -75,8 +75,13 @@ internals.odm = function(db) {
 
     Model._collection = db.collection(collectionName);
 
-    Model.all = (limit, skip) => {
+    Model.all = (query, limit, skip, sort) => {
       return new Promise((resolve, reject) => {
+        sort = sort || { createdAt: -1 };
+
+        if (!query) {
+          query = {};
+        }
 
         if (!limit && !skip) {
           limit = Infinity;
@@ -86,7 +91,7 @@ internals.odm = function(db) {
           skip = 0;
         }
 
-        let cursor = Model._collection.find({});
+        let cursor = Model._collection.find(query);
 
         if (skip) {
           cursor = cursor.skip(skip);
@@ -94,6 +99,10 @@ internals.odm = function(db) {
 
         if (limit) {
           cursor = cursor.limit(limit);
+        }
+
+        if (sort) {
+          cursor = cursor.sort(sort);
         }
 
         cursor.toArray((err, raw) => {
@@ -114,7 +123,7 @@ internals.odm = function(db) {
         });
       });
     };
-
+    // TODO: Do i need this?
     Model.find = function(query) {
       if (!query || !_.isObject(query)) {
         return Promise.reject(new Error('You need to call find with a mongo query'));

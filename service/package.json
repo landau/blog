@@ -8,7 +8,7 @@
     "open": "opener ./coverage/lcov-report/index.js",
     "coverage": "istanbul cover _mocha --recursive test/ && npm run open",
     "pretest": "eslint -c .eslintrc index.js lib/ test/",
-    "test": "mocha -R spec --recursive ./test",
+    "test": "NODE_MONGODB=mongodb://localhost/blog-service-test mocha -R spec --recursive ./test",
     "start": "node . | bunyan"
   },
   "repository": {

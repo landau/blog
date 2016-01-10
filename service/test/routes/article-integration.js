@@ -168,4 +168,28 @@ describe('Integration: Article Routes', () => {
       });
     });
   });
+
+  it('should find all published articles', (done) => {
+
+    let knownArticles = [article];
+
+    server.inject({
+      url: '/articles/published/latest',
+      method: 'get'
+    }, (res) => {
+      if (res.statusCode !== 200) {
+        return done(new Error(`Expected a 200. Got ${res.statusCode} ${JSON.stringify(res.result.message)}`));
+      }
+
+      let articles = res.result;
+      articles.should.be.an.array;
+
+      knownArticles.length.should.equal(articles.length);
+      articles.forEach((a, i) => {
+        String(knownArticles[i].id).should.equal(String(a.id));
+      });
+      done();
+
+    });
+  });
 });

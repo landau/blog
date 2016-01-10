@@ -72,6 +72,17 @@ internals.findPublished = (request, reply) => {
   reply(p);
 };
 
+internals.findLatestPublished = (request, reply) => {
+  const Article = request.server.app.Article;
+
+  let p = Article.all({
+    published: true
+  }, request.query.limit, request.query.skip)
+    .then((articles) => articles.map(_.property('fields')));
+
+  reply(p);
+};
+
 module.exports = (server) => {
   const JOI_ID = Joi.string().regex(/^[a-zA-Z0-9]{24}$/);
   const JOI_PUBLISHED = createArticle.internals.schema.uri;
@@ -103,6 +114,21 @@ module.exports = (server) => {
       },
       handler: internals.findById,
       tags: ['articles', 'find']
+    }
+  });
+
+  server.route({
+    method: 'GET',
+    path: '/articles/published/latest',
+    config: {
+      validate: {
+        query: {
+          limit: Joi.number(),
+          skip: Joi.number()
+        }
+      },
+      handler: internals.findLatestPublished,
+      tags: ['articles', 'find', 'publish']
     }
   });
 
