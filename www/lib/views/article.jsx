@@ -21,17 +21,15 @@ class Article extends React.Component {
     // TODO: disable changing uri
     const article = this.props.article;
 
-    let method = 'post';
     let action = '/admin/post';
 
     if (article.id) {
-      method = 'put';
       action = `${action}/${article.id}`;
     }
 
     return (
       <Layout title={article.hed}>
-        <form method={method} action={action}>
+        <form method="post" action={action}>
           <Header title={article.hed} subtitle={article.dek} isLive={this.props.isLive}/>
           <article>
             <div className="container">
@@ -41,11 +39,11 @@ class Article extends React.Component {
                 </div>
                 <div className={`input-group ${CONTENT_CLASSNAMES}`}>
                   <span className="input-group-addon">URI</span>
-                  <input type="text" className="form-control" placeholder="something" value={article.uri} name="uri" />
+                  <input type="text" className="form-control" placeholder="something" defaultValue={article.uri} name="uri" />
                 </div>
 
                 <div className={`checkbox ${CONTENT_CLASSNAMES}`}>
-                  <label><input type="checkbox" checked={article.published} name="published" /> Published</label>
+                  <label><input type="checkbox" defaultChecked={article.published} name="published" /> Published</label>
                 </div>
               </div>
               <hr/>
@@ -71,7 +69,7 @@ class Article extends React.Component {
 
     return (
       <Layout title={this.props.article.hed}>
-        <Header title={this.props.article.hed} subtitle={this.props.article.dek} onContentChange={this.props.onContentChange} onChangeUri={this.props.onChangeUri} onPublish={this.props.onPublish}/>
+        <Header title={this.props.article.hed} subtitle={this.props.article.dek} />
         <article>
           <div className="container">
             <div className="row">

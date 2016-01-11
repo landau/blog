@@ -147,7 +147,7 @@ describe('Integration: Article Routes', () => {
         return done(new Error(`Expected a 201. Got ${res.statusCode} ${JSON.stringify(res.result.message)}`));
       }
 
-      knownArticles.push(res.result);
+      knownArticles.unshift(res.result);
 
       server.inject({
         url: '/articles',

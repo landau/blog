@@ -58,7 +58,7 @@ internals.editPost = (req, reply) => {
 
   const SERVICE_URL = req.server.app.config.serviceurl;
   const opts = {
-    url: `${SERVICE_URL}/articles/published?uri=${req.params.uri}`,
+    url: `${SERVICE_URL}/articles/${req.params.id}`,
     json: true
   };
 
@@ -73,29 +73,27 @@ internals.editPost = (req, reply) => {
 
 internals.save = (req, reply) => {
   const SERVICE_URL = req.server.app.config.serviceurl;
-  const article = request.payload;
-  console.log(11, article);
+  let article = req.payload;
+
+  if (!article.published) {
+    article.published = false;
+  }
+
   let opts = {
     url: `${SERVICE_URL}/articles`,
     method: 'POST',
-    json: true,
-    payload: article
+    json: article
   };
 
-  if (article.id) {
-    opts.url += `/${article.id}`;
+  if (req.params.id) {
+    opts.url += `/${req.params.id}`;
     opts.method = 'PUT';
   }
 
-  reply.view('article', { article: article, isLive: false }).code(201);
-
-  //request(opts).then((article) => {
-  //    reply.view('article', {
-  //      article: article,
-  //      isLive: false
-  //    });
-  //  })
-  //  .catch(reply);
+  request[opts.method.toLowerCase()](opts).then((article) => {
+     reply.redirect(`/admin/post/${article.id}`);
+   })
+   .catch(reply);
 };
 
 module.exports = (server) => {
@@ -148,9 +146,19 @@ module.exports = (server) => {
     }
   });
 
+  // -- edit existing post
+  server.route({
+    method: 'GET',
+    path: '/admin/post/{id}',
+    config: {
+      handler: internals.editPost,
+      tags: ['article', 'post', 'edit']
+    }
+  });
+
   // -- new post
   server.route({
-    method: 'POST',
+    method: ['POST', 'PUT'],
     path: '/admin/post',
     config: {
       handler: internals.save,
@@ -158,20 +166,10 @@ module.exports = (server) => {
     }
   });
 
-  // -- edit existing post
-  server.route({
-    method: 'GET',
-    path: '/admin/post/{uri}',
-    config: {
-      handler: internals.editPost,
-      tags: ['article', 'post', 'edit']
-    }
-  });
-
   // -- update post
   server.route({
-    method: 'PUT',
-    path: '/admin/post/{uri}',
+    method: 'POST',
+    path: '/admin/post/{id}',
     config: {
       handler: internals.save,
       tags: ['article', 'post', 'edit', 'update']

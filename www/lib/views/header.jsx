@@ -7,10 +7,10 @@ class Header extends React.Component {
   renderEdit() {
     return (
       <div className="site-heading">
-        <h1><input type="text" value={this.props.title} name="hed"/></h1>
+        <h1><input type="text" defaultValue={this.props.title} name="hed"/></h1>
         <hr className="small"/>
         <span className="subheading">
-          <input type="text" value={this.props.subtitle} name="dek"/>
+          <input type="text" defaultValue={this.props.subtitle} name="dek"/>
         </span>
       </div>
     );
@@ -43,5 +43,5 @@ class Header extends React.Component {
   }
 }
 
-Header.defaultProps = {isLive: true, onChangeHed: _.noop, onChangeDek: _.noop};
+Header.defaultProps = {isLive: true};
 module.exports = Header;

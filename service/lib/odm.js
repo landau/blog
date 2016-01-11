@@ -192,14 +192,16 @@ internals.odm = function(db) {
         });
 
         self.fields.id = new bson.ObjectId();
-
-        Model._collection.save(self.fields)
-          .then(extractResult)
-          .then((result) => {
-            self.fields = result;
-            removeMongoId(self.fields);
-            resolve(self);
-          });
+        resolve(self);
+      })
+      .then((self) => {
+        return Model._collection.save(self.fields);
+      })
+      .then(extractResult)
+      .then((result) => {
+        self.fields = result;
+        removeMongoId(self.fields);
+        return self;
       });
     };
 
@@ -232,19 +234,20 @@ internals.odm = function(db) {
         });
 
         self.fields = newFields;
-
-        Model._collection.updateOne({
+        resolve(self);
+      }).then((self) => {
+        return Model._collection.updateOne({
           id: self.fields.id
         }, {
           $set: self.fields
         }, {
           upsert: false
-        })
-        .then(extractResult)
-        .then(() => {
-          removeMongoId(self.fields);
-          return resolve(self);
         });
+      })
+      .then(extractResult)
+      .then(() => {
+        removeMongoId(self.fields);
+        return self;
       });
     };
 

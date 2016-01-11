@@ -168,7 +168,7 @@ describe('odm', () => {
         let _model = models.shift();
         _model.should.have.property('fields');
         _model.fields.should.have.property('someStringProperty');
-        _model.fields.someStringProperty.should.equal(myModel.fields.someStringProperty);
+        _model.fields.someStringProperty.should.equal(myModel2.fields.someStringProperty);
         _model.fields.should.have.property('someNumberProperty');
         _model.fields.someNumberProperty.should.equal(myModel.fields.someNumberProperty);
         _model.fields.should.have.property('createdAt');
