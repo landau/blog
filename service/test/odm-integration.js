@@ -179,6 +179,16 @@ describe('odm', () => {
       .catch(done);
   });
 
+  it('should return the number of documents', (done) => {
+    Model.count().then((n) =>{
+      should.exist(n);
+      n.should.be.a.number;
+      n.should.equal(2);
+      done();
+    })
+    .catch(done);
+  });
+
   it('should execute a find query', (done) => {
     let query = {
       someStringProperty: myModel.fields.someStringProperty

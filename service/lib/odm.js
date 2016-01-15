@@ -123,7 +123,16 @@ internals.odm = function(db) {
         });
       });
     };
-    // TODO: Do i need this?
+
+    Model.count = (query) => {
+      if (!query) {
+        query = {};
+      }
+
+      return Model._collection.count(query);
+    };
+
+    // TODO: Do i need this? Is Model.all sufficient?
     Model.find = function(query) {
       if (!query || !_.isObject(query)) {
         return Promise.reject(new Error('You need to call find with a mongo query'));

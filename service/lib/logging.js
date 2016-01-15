@@ -25,6 +25,10 @@ exports.attach = (server) => {
       logLine.payload = request.payload;
     }
 
+    if (request.query) {
+      logLine.query = request.query;
+    }
+
     return logLine;
   }
 

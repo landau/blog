@@ -157,7 +157,13 @@ describe('Integration: Article Routes', () => {
           return done(new Error(`Expected a 200. Got ${res.statusCode} ${JSON.stringify(res.result.message)}`));
         }
 
-        let articles = res.result;
+        let result = res.result;
+        result.should.be.an.object;
+
+        result.page.should.equal(1);
+        result.total.should.equal(knownArticles.length);
+
+        let articles = result.data;
         articles.should.be.an.array;
 
         knownArticles.length.should.equal(articles.length);
