@@ -31,6 +31,22 @@ describe('Integration: Routes', () => {
     };
   }
 
+  function get(server) {
+    return (url) => {
+      return new Promise(function(resolve, reject) {
+        server.inject({
+          url: url,
+          method: 'GET'
+        }, (res) => {
+          if (res.statusCode !== 200) {
+            return reject(new Error(`Expected a 200. Got ${res.statusCode} ${JSON.stringify(res.result.message)}`));
+          }
+          resolve(res.result);
+        });
+      });
+    };
+  }
+
   before((done) => {
     server.app.logger.level('error');
 
@@ -107,52 +123,36 @@ describe('Integration: Routes', () => {
     });
 
     it('should find an article by id', (done) => {
-      server.inject({
-        url: `/articles/${article.id}`,
-        method: 'GET'
-      }, (res) => {
-        if (res.statusCode !== 200) {
-          return done(new Error(`Expected a 200. Got ${res.statusCode} ${JSON.stringify(res.result.message)}`));
-        }
-
-        let found = res.result;
-        String(article.id).should.equal(String(found.id));
-
-        done();
-      });
+      Promise.resolve(`/articles/${article.id}`)
+        .then(get(server))
+        .then((found) => {
+          String(article.id).should.equal(String(found.id));
+          done();
+        })
+        .catch(done);
     });
 
     it('should find a published article by uri', (done) => {
-      server.inject({
-        url: `/articles/published?uri=${article.uri}`,
-        method: 'GET'
-      }, (res) => {
-        if (res.statusCode !== 200) {
-          return done(new Error(`Expected a 200. Got ${res.statusCode} ${JSON.stringify(res.result.message)}`));
-        }
-
-        let found = res.result;
-        String(article.id).should.equal(String(found.id));
-
-        done();
-      });
+      Promise.resolve(`/articles/published?uri=${article.uri}`)
+        .then(get(server))
+        .then((found) => {
+          String(article.id).should.equal(String(found.id));
+          done();
+        })
+        .catch(done);
     });
 
     it('should find a published article by id', (done) => {
-      server.inject({
-        url: `/articles/published?id=${article.id.toString()}`,
-        method: 'GET'
-      }, (res) => {
-        if (res.statusCode !== 200) {
-          return done(new Error(`Expected a 200. Got ${res.statusCode} ${JSON.stringify(res.result.message)}`));
-        }
-
-        let found = res.result;
-        String(article.id).should.equal(String(found.id));
-
-        done();
-      });
+      Promise.resolve(`/articles/published?id=${article.id.toString()}`)
+        .then(get(server))
+        .then((found) => {
+          String(article.id).should.equal(String(found.id));
+          done();
+        })
+        .catch(done);
     });
+
+    let article2;
 
     it('should find all articles', (done) => {
 
@@ -160,69 +160,113 @@ describe('Integration: Routes', () => {
 
       const payload = {
         hed: 'foo',
-        body: 'bar'
+        body: 'bar',
+        tags: ['foo']
       };
 
       Promise.resolve(payload)
         .then(create(server))
         .then((_article) => {
-          knownArticles.unshift(_article);
+          article2 = _article;
+          knownArticles.unshift(article2);
+          return Promise.resolve(`/articles`).then(get(server));
+        })
+        .then((result) => {
+          result.should.be.an.object;
 
-          server.inject({
-            url: '/articles',
-            method: 'GET'
-          }, (res) => {
-            if (res.statusCode !== 200) {
-              return done(new Error(`Expected a 200. Got ${res.statusCode} ${JSON.stringify(res.result.message)}`));
-            }
+          result.page.should.equal(1);
+          result.total.should.equal(knownArticles.length);
 
-            let result = res.result;
-            result.should.be.an.object;
+          let articles = result.data;
+          articles.should.be.an.array;
 
-            result.page.should.equal(1);
-            result.total.should.equal(knownArticles.length);
-
-            let articles = result.data;
-            articles.should.be.an.array;
-
-            knownArticles.length.should.equal(articles.length);
-            articles.forEach((a, i) => {
-              String(knownArticles[i].id).should.equal(String(a.id));
-            });
-            done();
+          knownArticles.length.should.equal(articles.length);
+          articles.forEach((a, i) => {
+            String(knownArticles[i].id).should.equal(String(a.id));
           });
+          done();
         })
         .catch(done);
+    });
 
+    it('should find articles with specifed tags with multi docs have the same tag', function(done) {
+      const knownArticles = [article2, article];
+      const tag = 'foo';
+
+      Promise.resolve(`/articles?tags=${tag}`)
+        .then(get(server))
+        .then((result) => {
+          let articles = result.data;
+
+          knownArticles.length.should.equal(articles.length);
+          articles.forEach((a, i) => {
+            String(knownArticles[i].id).should.equal(String(a.id));
+          });
+          done();
+        })
+        .catch(done);
+    });
+
+    it('should find articles with specifed tags with multi docs have different tags', function(done) {
+      const knownArticles =  [article];
+      const tag = 'bar';
+
+      Promise.resolve(`/articles?tags=${tag}`)
+        .then(get(server))
+        .then((result) => {
+          let articles = result.data;
+
+          knownArticles.length.should.equal(articles.length);
+          articles.forEach((a, i) => {
+            String(knownArticles[i].id).should.equal(String(a.id));
+          });
+          done();
+        })
+        .catch(done);
     });
 
     it('should find all published articles', (done) => {
 
       let knownArticles = [article];
 
-      server.inject({
-        url: '/articles/published/latest',
-        method: 'GET'
-      }, (res) => {
-        if (res.statusCode !== 200) {
-          return done(new Error(`Expected a 200. Got ${res.statusCode} ${JSON.stringify(res.result.message)}`));
-        }
+      Promise.resolve('/articles/published/latest')
+        .then(get(server))
+        .then((result) => {
+          result.should.be.an.object;
 
-        let result = res.result;
-        result.should.be.an.object;
+          result.page.should.equal(1);
+          result.total.should.equal(knownArticles.length);
 
-        result.page.should.equal(1);
-        result.total.should.equal(knownArticles.length);
+          let articles = result.data;
+          articles.should.be.an.array;
 
-        let articles = result.data;
-        articles.should.be.an.array;
+          knownArticles.length.should.equal(articles.length);
 
-        knownArticles.length.should.equal(articles.length);
-        articles.forEach((a, i) => {
-          String(knownArticles[i].id).should.equal(String(a.id));
-        });
-        done();
-      });
+          articles.forEach((a, i) => {
+            String(knownArticles[i].id).should.equal(String(a.id));
+          });
+          done();
+        })
+        .catch(done);
+    });
+
+    it('should find published articles with specifed tags', function(done) {
+      const knownArticles = [article];
+      const tag = 'foo';
+
+      Promise.resolve(`/articles/published/latest?tags=${tag}`)
+        .then(get(server))
+        .then((result) => {
+          const articles = result.data;
+
+          knownArticles.length.should.equal(articles.length);
+
+          articles.forEach((a, i) => {
+            String(knownArticles[i].id).should.equal(String(a.id));
+          });
+          done();
+        })
+        .catch(done);
     });
   });
 
@@ -267,30 +311,22 @@ describe('Integration: Routes', () => {
           done();
         })
         .catch(done);
-
     });
 
     it('should return all tags', function(done) {
-      server.inject({
-        url: '/tags',
-        method: 'get'
-      }, (res) => {
-        if (res.statusCode !== 200) {
-          return done(new Error(`Expected a 200. Got ${res.statusCode} ${JSON.stringify(res.result.message)}`));
-        }
+      Promise.resolve('/tags')
+        .then(get(server))
+        .then((result) => {
+          result.page.should.equal(1);
+          result.total.should.equal(payloads.length);
 
-        const result = res.result;
+          const validTags = ['foo', 'bar', 'baz'].sort();
+          const tags = result.data.sort();
 
-        result.page.should.equal(1);
-        result.total.should.equal(payloads.length);
-
-        const validTags = ['foo', 'bar', 'baz'].sort();
-        const tags = result.data.sort();
-
-        tags.should.deep.equal(validTags);
-
-        done();
-      });
+          tags.should.deep.equal(validTags);
+          done();
+        })
+        .catch(done);
     });
   });
 });

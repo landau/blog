@@ -16,7 +16,7 @@ internals.find = (request, reply) => {
     const tags = request.query.tags.split(',');
     if (tags.length) {
       query.tags = {
-        $all: tags
+        $in: tags
       };
     }
   }
@@ -107,7 +107,7 @@ internals.findLatestPublished = (request, reply) => {
     const tags = request.query.tags.split(',');
     if (tags.length) {
       query.tags = {
-        $all: tags
+        $in: tags
       };
     }
   }
@@ -143,7 +143,7 @@ module.exports = (server) => {
         query: {
           limit: Joi.number(),
           skip: Joi.number().default(0),
-          tags: Joi.string().default('') // TODO: test me
+          tags: Joi.string().default('')
         }
       },
       handler: internals.find,
@@ -173,7 +173,7 @@ module.exports = (server) => {
         query: {
           limit: Joi.number(),
           skip: Joi.number().default(0),
-          tags: Joi.string().default('') // TODO: test me
+          tags: Joi.string().default('')
         }
       },
       handler: internals.findLatestPublished,
