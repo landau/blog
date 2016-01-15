@@ -22,9 +22,9 @@ internals.index = (req, reply) => {
   };
 
   // TODO: Handle empty collection
-  request(opts).then((articles) => {
+  request(opts).then((result) => {
       reply.view('index', {
-        articles: articles,
+        articles: result.data,
         nextPage: page + 1
       });
     })

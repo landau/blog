@@ -35,12 +35,20 @@ describe('Integration: Routes', () => {
 
   describe('GET index', () => {
     it('should reply with html', (done) => {
+      const articles = [fixtures.article, fixtures.publishedArticle];
+
+      const response = {
+        total: articles.length,
+        page: 1,
+        data: articles
+      };
+
       nock(server.app.config.serviceurl)
         .get('/articles/published/latest')
         .query({
           limit: 4
         })
-        .reply(200, [fixtures.article, fixtures.publishedArticle]);
+        .reply(200, response);
 
       server.inject({
         url: '/'
@@ -54,13 +62,21 @@ describe('Integration: Routes', () => {
     });
 
     it('should reply with html on page 2', (done) => {
+      const articles = [fixtures.article, fixtures.publishedArticle];
+
+      const response = {
+        total: articles.length,
+        page: 2,
+        data: articles
+      };
+
       nock(server.app.config.serviceurl)
         .get('/articles/published/latest')
         .query({
           skip: 1,
           limit: 4
         })
-        .reply(200, [fixtures.article, fixtures.publishedArticle]);
+        .reply(200, response);
 
       server.inject({
         url: '/?page=2'
