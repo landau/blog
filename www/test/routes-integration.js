@@ -140,8 +140,7 @@ describe('Integration: Routes', () => {
     });
   });
 
-  // FIXME: handle redirect
-  describe.skip('POST /admin/post', () => {
+  describe('POST /admin/post', () => {
     it('should POST a new article', (done) => {
       const payload = {
         hed: 'hi',
@@ -157,16 +156,19 @@ describe('Integration: Routes', () => {
         method: 'POST',
         payload: payload
       }, (res) => {
-        if (res.statusCode !== 200) {
-          return done(new Error(`Expected a 200. Got ${res.statusCode} ${JSON.stringify(res.result.message)}`));
+
+        if (res.statusCode !== 302) {
+          return done(new Error(`Expected a 302. Got ${res.statusCode} ${JSON.stringify(res.result.message)}`));
         }
-        res.result.should.be.a.string;
+        
+        res.headers.location.should.equal(`/admin/post/${fixtures.article.id}`);
+
         done();
       });
     });
   });
 
-  describe.skip('PUT /admin/post', () => {
+  describe('PUT /admin/post', () => {
     it('should update an existing article', (done) => {
       const payload = fixtures.article;
 
@@ -179,10 +181,12 @@ describe('Integration: Routes', () => {
         method: 'POST',
         payload: payload
       }, (res) => {
-        if (res.statusCode !== 200) {
-          return done(new Error(`Expected a 200. Got ${res.statusCode} ${JSON.stringify(res.result.message)}`));
+        if (res.statusCode !== 302) {
+          return done(new Error(`Expected a 302. Got ${res.statusCode} ${JSON.stringify(res.result.message)}`));
         }
-        res.result.should.be.a.string;
+
+        res.headers.location.should.equal(`/admin/post/${fixtures.article.id}`);
+
         done();
       });
     });
