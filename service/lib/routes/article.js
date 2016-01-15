@@ -87,10 +87,24 @@ internals.findPublished = (request, reply) => {
 internals.findLatestPublished = (request, reply) => {
   const Article = request.server.app.Article;
 
-  let p = Article.all({
+  const query = {
     published: true
-  }, request.query.limit, request.query.skip)
+  };
+
+  let articles = Article.all(query, request.query.limit, request.query.skip)
     .then((articles) => articles.map(_.property('fields')));
+
+  let p = Promise.all([articles, Article.count(query)])
+    .then((results) => {
+      const articles = results[0];
+      const total = results[1];
+
+      return {
+        page: request.query.skip + 1,
+        total: total,
+        data: articles
+      };
+    });
 
   reply(p);
 };
@@ -136,7 +150,7 @@ module.exports = (server) => {
       validate: {
         query: {
           limit: Joi.number(),
-          skip: Joi.number()
+          skip: Joi.number().default(0)
         }
       },
       handler: internals.findLatestPublished,
