@@ -9,10 +9,22 @@ let internals = {};
 
 internals.find = (request, reply) => {
   const Article = request.server.app.Article;
-  let articles = Article.all(request.query.limit, request.query.skip)
+
+  let query = {};
+
+  if (request.query.tags) {
+    const tags = request.query.tags.split(',');
+    if (tags.length) {
+      query.tags = {
+        $all: tags
+      };
+    }
+  }
+
+  let articles = Article.all(query, request.query.limit, request.query.skip)
     .then((articles) => articles.map(_.property('fields')));
 
-  let p = Promise.all([articles, Article.count()])
+  let p = Promise.all([articles, Article.count(query)])
     .then((results) => {
       const articles = results[0];
       const total = results[1];
@@ -87,9 +99,18 @@ internals.findPublished = (request, reply) => {
 internals.findLatestPublished = (request, reply) => {
   const Article = request.server.app.Article;
 
-  const query = {
+  let query = {
     published: true
   };
+
+  if (request.query.tags) {
+    const tags = request.query.tags.split(',');
+    if (tags.length) {
+      query.tags = {
+        $all: tags
+      };
+    }
+  }
 
   let articles = Article.all(query, request.query.limit, request.query.skip)
     .then((articles) => articles.map(_.property('fields')));
@@ -121,7 +142,8 @@ module.exports = (server) => {
       validate: {
         query: {
           limit: Joi.number(),
-          skip: Joi.number().default(0)
+          skip: Joi.number().default(0),
+          tags: Joi.string().default('') // TODO: test me
         }
       },
       handler: internals.find,
@@ -150,7 +172,8 @@ module.exports = (server) => {
       validate: {
         query: {
           limit: Joi.number(),
-          skip: Joi.number().default(0)
+          skip: Joi.number().default(0),
+          tags: Joi.string().default('') // TODO: test me
         }
       },
       handler: internals.findLatestPublished,

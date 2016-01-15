@@ -2,5 +2,6 @@
 
 module.exports = [
   require('./ping'),
-  require('./article')
+  require('./article'),
+  require('./tags')
 ];
