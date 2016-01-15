@@ -73,7 +73,7 @@ describe('Integration: Routes', () => {
       nock(server.app.config.serviceurl)
         .get('/articles/published/latest')
         .query({
-          skip: 1,
+          skip: 4,
           limit: 4
         })
         .reply(200, response);
@@ -160,7 +160,7 @@ describe('Integration: Routes', () => {
         if (res.statusCode !== 302) {
           return done(new Error(`Expected a 302. Got ${res.statusCode} ${JSON.stringify(res.result.message)}`));
         }
-        
+
         res.headers.location.should.equal(`/admin/post/${fixtures.article.id}`);
 
         done();

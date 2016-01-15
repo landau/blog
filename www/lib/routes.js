@@ -3,18 +3,23 @@
 const request = require('request-promise');
 const P = require('predicate');
 const Joi = require('joi');
+const _ = require('lodash');
 
 let internals = {};
 
 internals.index = (req, reply) => {
+  const log = req.server.app.logger.child({ view: 'index' });
+  const MAX_PAGE = 4; // TODO: ENV VAR
   const page = req.query.page || 1;
   const SERVICE_URL = req.server.app.config.serviceurl;
-  let url = `${SERVICE_URL}/articles/published/latest?limit=4`;
+  let url = `${SERVICE_URL}/articles/published/latest?limit=${MAX_PAGE}`;
 
   if (P.num(page) && page > 1) { // base site page is 1, no need to add skip
     // The site's page base is 1 and api is 0, therefore `page - 1`
-    url += `&skip=${page - 1}`;
+    url += `&skip=${MAX_PAGE * (page - 1)}`;
   }
+
+  log.info(url);
 
   const opts = {
     url: url,
@@ -23,9 +28,13 @@ internals.index = (req, reply) => {
 
   // TODO: Handle empty collection
   request(opts).then((result) => {
+      const NEXT_PAGE = page + 1;
+      const hasNextPage = result.total > MAX_PAGE * (NEXT_PAGE - 1);
+
       reply.view('index', {
         articles: result.data,
-        nextPage: page + 1
+        nextPage: NEXT_PAGE,
+        hasNextPage: hasNextPage
       });
     })
     .catch(reply);
@@ -39,6 +48,8 @@ internals.post = (req, reply) => {
   };
 
   request(opts).then((article) => {
+      req.server.app.logger.info(_.omit(article, ['body']));
+
       reply.view('article', {
         article: article,
         live: true

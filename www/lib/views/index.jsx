@@ -35,6 +35,20 @@ class ArticlePreview extends React.Component {
 }
 
 class ArticlePreviewList extends React.Component {
+  renderPager() {
+    if (!this.props.hasNextPage) {
+      return null;
+    }
+
+    return (
+      <ul className="pager">
+        <li className="next">
+          <a href={`/?page=${this.props.nextPage}`}>Older Posts &rarr;</a>
+        </li>
+      </ul>
+    );
+  }
+
   render() {
     let articles = this.props.articles
       .map((a) => <ArticlePreview article={a} key={a.id}/>)
@@ -45,11 +59,7 @@ class ArticlePreviewList extends React.Component {
     return (
       <div className="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
         {articles}
-        <ul className="pager">
-          <li className="next">
-            <a href={`/?page=${this.props.nextPage}`}>Older Posts &rarr;</a>
-          </li>
-        </ul>
+        {this.renderPager()}
       </div>
     );
   }
@@ -62,7 +72,7 @@ class Home extends React.Component {
         <Header title='Blog' subtitle='Random thoughts and such...'/>
         <div className="container">
           <div className="row">
-            <ArticlePreviewList articles={this.props.articles} nextPage={this.props.nextPage}/>
+            <ArticlePreviewList {...this.props}/>
           </div>
         </div>
         <hr/>
