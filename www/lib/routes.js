@@ -34,7 +34,8 @@ internals.index = (req, reply) => {
       reply.view('index', {
         articles: result.data,
         nextPage: NEXT_PAGE,
-        hasNextPage: hasNextPage
+        hasNextPage: hasNextPage,
+        isLive: (req.query || {}).live
       });
     })
     .catch(reply);
@@ -52,7 +53,7 @@ internals.post = (req, reply) => {
 
       reply.view('article', {
         article: article,
-        live: true
+        isLive: true
       });
     })
     .catch(reply);
@@ -129,11 +130,28 @@ module.exports = (server) => {
     config: {
       validate: {
         query: {
-          page: Joi.number().integer().positive().optional().min(1)
+          page: Joi.number().integer().positive().optional().min(1),
+          live: Joi.boolean().invalid(false)
         }
       },
       handler: internals.index,
       tags: ['root', 'home']
+    }
+  });
+
+  // -- home
+  server.route({
+    method: 'GET',
+    path: '/admin',
+    config: {
+      validate: {
+        query: {
+          page: Joi.number().integer().positive().optional().min(1),
+          live: Joi.boolean().default(false)
+        }
+      },
+      handler: internals.index,
+      tags: ['root', 'home', 'admin']
     }
   });
 

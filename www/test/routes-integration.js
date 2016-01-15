@@ -90,6 +90,35 @@ describe('Integration: Routes', () => {
     });
   });
 
+  describe('GET /admin', () => {
+    it('should reply with html', (done) => {
+      const articles = [fixtures.article, fixtures.publishedArticle];
+
+      const response = {
+        total: articles.length,
+        page: 1,
+        data: articles
+      };
+
+      nock(server.app.config.serviceurl)
+        .get('/articles/published/latest')
+        .query({
+          limit: 4
+        })
+        .reply(200, response);
+
+      server.inject({
+        url: '/admin'
+      }, (res) => {
+        if (res.statusCode !== 200) {
+          return done(new Error(`Expected a 200. Got ${res.statusCode} ${JSON.stringify(res.result.message)}`));
+        }
+        res.result.should.be.a.string;
+        done();
+      });
+    });
+  });
+
   describe('GET /post/{uri}', () => {
     it('should reply with html', (done) => {
       nock(server.app.config.serviceurl)

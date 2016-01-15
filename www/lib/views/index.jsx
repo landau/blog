@@ -16,9 +16,15 @@ class ArticlePreview extends React.Component {
       body = `${body.slice(0, MAX_BODY_LEN - 3)}...`;
     }
 
+    let url = `/post/${this.props.article.uri}`;
+
+    if (!this.props.isLive) {
+      url = `/admin/post/${this.props.article.id}`;
+    }
+
     return (
       <div className="post-preview">
-        <a href={`/post/${this.props.article.uri}`}>
+        <a href={url}>
           <h2 className="post-title">
             {this.props.article.hed}
           </h2>
@@ -51,7 +57,7 @@ class ArticlePreviewList extends React.Component {
 
   render() {
     let articles = this.props.articles
-      .map((a) => <ArticlePreview article={a} key={a.id}/>)
+      .map((a) => <ArticlePreview article={a} key={a.id} isLive={this.props.isLive}/>)
       .reduce((articles, article) => {
         return articles.concat(article, <hr key={'hr' + article.props.article.id} />); // separate articles by hr
       }, []);
