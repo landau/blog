@@ -27,7 +27,7 @@ class Header extends React.Component {
   }
 
   render () {
-    const style = {'backgroundImage': 'url(\'/img/home-bg.jpg\')'};
+    const style = {'backgroundImage': 'url(\'/img/header-bg.jpg\')'};
 
     return (
       <header className="intro-header" style={style}>
