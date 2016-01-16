@@ -41,7 +41,7 @@ internals.index = (req, reply) => {
     .catch(reply);
 };
 
-internals.post = (req, reply) => {
+internals.getPost = (req, reply) => {
   const SERVICE_URL = req.server.app.config.serviceurl;
   const opts = {
     url: `${SERVICE_URL}/articles/published?uri=${req.params.uri}`,
@@ -91,17 +91,23 @@ internals.save = (req, reply) => {
     article.published = false;
   }
 
+  if (typeof article.tags === 'string') {
+    article.tags = article.tags.split(',');
+  }
+
   let opts = {
     url: `${SERVICE_URL}/articles`,
     method: 'POST',
     json: article
   };
 
+  // Update!
   if (req.params.id) {
     opts.url += `/${req.params.id}`;
     opts.method = 'PUT';
   }
 
+  // TODO change to redirect page
   request[opts.method.toLowerCase()](opts).then((article) => {
      reply.redirect(`/admin/post/${article.id}`);
    })
@@ -109,6 +115,7 @@ internals.save = (req, reply) => {
 };
 
 module.exports = (server) => {
+  // TODO: admin validation
   // -- ping
   server.route({
     method: 'GET',
@@ -131,7 +138,7 @@ module.exports = (server) => {
       validate: {
         query: {
           page: Joi.number().integer().positive().optional().min(1),
-          live: Joi.boolean().invalid(false)
+          live: Joi.boolean().default(true).invalid(false)
         }
       },
       handler: internals.index,
@@ -139,7 +146,7 @@ module.exports = (server) => {
     }
   });
 
-  // -- home
+  // -- admin home
   server.route({
     method: 'GET',
     path: '/admin',
@@ -160,7 +167,7 @@ module.exports = (server) => {
     method: 'GET',
     path: '/post/{uri}',
     config: {
-      handler: internals.post,
+      handler: internals.getPost,
       tags: ['article', 'post']
     }
   });

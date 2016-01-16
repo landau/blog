@@ -173,11 +173,18 @@ describe('Integration: Routes', () => {
     it('should POST a new article', (done) => {
       const payload = {
         hed: 'hi',
-        body: 'yo'
+        body: 'yo',
+        tags: 'a,b,c'
+      };
+
+      const nockPayload = {
+        hed: 'hi',
+        body: 'yo',
+        tags: ['a','b','c']
       };
 
       nock(server.app.config.serviceurl)
-        .post('/articles', payload)
+        .post('/articles', nockPayload)
         .reply(201, fixtures.article);
 
       server.inject({

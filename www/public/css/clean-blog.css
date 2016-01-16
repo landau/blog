@@ -16,24 +16,17 @@ p {
 p a {
   text-decoration: underline;
 }
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1, h2, h3, h4, h5, h6 {
   font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 800;
 }
 a {
   color: #404040;
 }
-a:hover,
-a:focus {
+a:hover, a:focus {
   color: #0085a1;
 }
-a img:hover,
-a img:focus {
+a img:hover, a img:focus {
   cursor: zoom-in;
 }
 blockquote {
@@ -72,16 +65,14 @@ hr.small {
     color: white;
     padding: 20px;
   }
-  .navbar-custom .navbar-brand:hover,
-  .navbar-custom .navbar-brand:focus {
+  .navbar-custom .navbar-brand:hover, .navbar-custom .navbar-brand:focus {
     color: rgba(255, 255, 255, 0.8);
   }
   .navbar-custom .nav li a {
     color: white;
     padding: 20px;
   }
-  .navbar-custom .nav li a:hover,
-  .navbar-custom .nav li a:focus {
+  .navbar-custom .nav li a:hover, .navbar-custom .nav li a:focus {
     color: rgba(255, 255, 255, 0.8);
   }
 }
@@ -112,15 +103,13 @@ hr.small {
   .navbar-custom.is-fixed .navbar-brand {
     color: #404040;
   }
-  .navbar-custom.is-fixed .navbar-brand:hover,
-  .navbar-custom.is-fixed .navbar-brand:focus {
+  .navbar-custom.is-fixed .navbar-brand:hover, .navbar-custom.is-fixed .navbar-brand:focus {
     color: #0085a1;
   }
   .navbar-custom.is-fixed .nav li a {
     color: #404040;
   }
-  .navbar-custom.is-fixed .nav li a:hover,
-  .navbar-custom.is-fixed .nav li a:focus {
+  .navbar-custom.is-fixed .nav li a:hover, .navbar-custom.is-fixed .nav li a:focus {
     color: #0085a1;
   }
   .navbar-custom.is-visible {
@@ -142,36 +131,27 @@ hr.small {
   -o-background-size: cover;
   margin-bottom: 50px;
 }
-.intro-header .site-heading,
-.intro-header .post-heading,
-.intro-header .page-heading {
+.intro-header .site-heading, .intro-header .post-heading, .intro-header .page-heading {
   padding: 100px 0 50px;
   color: white;
 }
-.intro-header .site-heading input,
-.intro-header .post-heading input,
-.intro-header .page-heading input {
+.intro-header .site-heading input, .intro-header .post-heading input, .intro-header .page-heading input {
   color: black;
   width: 100%;
 }
 @media only screen and (min-width: 768px) {
-  .intro-header .site-heading,
-  .intro-header .post-heading,
-  .intro-header .page-heading {
+  .intro-header .site-heading, .intro-header .post-heading, .intro-header .page-heading {
     padding: 150px 0;
   }
 }
-.intro-header .site-heading,
-.intro-header .page-heading {
+.intro-header .site-heading, .intro-header .page-heading {
   text-align: center;
 }
-.intro-header .site-heading h1,
-.intro-header .page-heading h1 {
+.intro-header .site-heading h1, .intro-header .page-heading h1 {
   margin-top: 0;
   font-size: 50px;
 }
-.intro-header .site-heading .subheading,
-.intro-header .page-heading .subheading {
+.intro-header .site-heading .subheading, .intro-header .page-heading .subheading {
   font-size: 24px;
   line-height: 1.1;
   display: block;
@@ -179,22 +159,19 @@ hr.small {
   font-weight: 300;
   margin: 10px 0 0;
 }
-.intro-header .site-heading .subheading input,
-.intro-header .page-heading .subheading input {
+.intro-header .site-heading .subheading input, .intro-header .page-heading .subheading input {
   color: black;
   width: 100%;
 }
 @media only screen and (min-width: 768px) {
-  .intro-header .site-heading h1,
-  .intro-header .page-heading h1 {
+  .intro-header .site-heading h1, .intro-header .page-heading h1 {
     font-size: 80px;
   }
 }
 .intro-header .post-heading h1 {
   font-size: 35px;
 }
-.intro-header .post-heading .subheading,
-.intro-header .post-heading .meta {
+.intro-header .post-heading .subheading, .intro-header .post-heading .meta {
   line-height: 1.1;
   display: block;
 }
@@ -224,8 +201,7 @@ hr.small {
 .post-preview > a {
   color: #404040;
 }
-.post-preview > a:hover,
-.post-preview > a:focus {
+.post-preview > a:hover, .post-preview > a:focus {
   text-decoration: none;
   color: #0085a1;
 }
@@ -249,8 +225,7 @@ hr.small {
   text-decoration: none;
   color: #404040;
 }
-.post-preview > .post-meta > a:hover,
-.post-preview > .post-meta > a:focus {
+.post-preview > .post-meta > a:hover, .post-preview > .post-meta > a:focus {
   color: #0085a1;
   text-decoration: underline;
 }
@@ -293,8 +268,7 @@ footer .copyright {
   padding-bottom: 0.5em;
   border-bottom: 1px solid #eeeeee;
 }
-.floating-label-form-group input,
-.floating-label-form-group textarea {
+.floating-label-form-group input, .floating-label-form-group textarea {
   z-index: 1;
   position: relative;
   padding-right: 0;
@@ -317,10 +291,10 @@ footer .copyright {
   vertical-align: middle;
   vertical-align: baseline;
   opacity: 0;
-  -webkit-transition: top 0.3s ease,opacity 0.3s ease;
-  -moz-transition: top 0.3s ease,opacity 0.3s ease;
-  -ms-transition: top 0.3s ease,opacity 0.3s ease;
-  transition: top 0.3s ease,opacity 0.3s ease;
+  -webkit-transition: top 0.3s ease, opacity 0.3s ease;
+  -moz-transition: top 0.3s ease, opacity 0.3s ease;
+  -ms-transition: top 0.3s ease, opacity 0.3s ease;
+  transition: top 0.3s ease, opacity 0.3s ease;
 }
 .floating-label-form-group::not(:first-child) {
   padding-left: 14px;
@@ -349,8 +323,7 @@ form .row:first-child .floating-label-form-group {
   font-size: 16px;
   padding: 25px 35px;
 }
-.btn-default:hover,
-.btn-default:focus {
+.btn-default:hover, .btn-default:focus {
   background-color: #0085a1;
   border: 1px solid #0085a1;
   color: white;
@@ -358,8 +331,7 @@ form .row:first-child .floating-label-form-group {
 .pager {
   margin: 20px 0 0;
 }
-.pager li > a,
-.pager li > span {
+.pager li > a, .pager li > span {
   font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   text-transform: uppercase;
   font-size: 14px;
@@ -369,16 +341,12 @@ form .row:first-child .floating-label-form-group {
   background-color: white;
   border-radius: 0;
 }
-.pager li > a:hover,
-.pager li > a:focus {
+.pager li > a:hover, .pager li > a:focus {
   color: white;
   background-color: #0085a1;
   border: 1px solid #0085a1;
 }
-.pager .disabled > a,
-.pager .disabled > a:hover,
-.pager .disabled > a:focus,
-.pager .disabled > span {
+.pager .disabled > a, .pager .disabled > a:hover, .pager .disabled > a:focus, .pager .disabled > span {
   color: #808080;
   background-color: #404040;
   cursor: not-allowed;
@@ -403,4 +371,22 @@ img::-moz-selection {
 }
 body {
   webkit-tap-highlight-color: #0085a1;
+}
+
+.nav.nav-pills h3 {
+  line-height: 10px;
+}
+
+.nav>li>a {
+  padding: 10px 5px;
+}
+
+.nav-pills>li>a>.badge {
+  margin-left: 3px;
+  background-color: #337ab7;
+  font-family: "Lora", "Open Sans", monospace;
+  font-size: 14px;
+  font-weight: 100;
+  padding: 6px 15px;
+  letter-spacing: 2px;
 }

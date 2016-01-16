@@ -4,6 +4,8 @@ const React = require('react');
 const Layout = require('./layout.jsx');
 const Header = require('./header.jsx');
 const Footer = require('./footer.jsx');
+const TagList = require('./tags.jsx');
+
 const moment = require('moment');
 const toHtml = require('../utils').toHtml;
 const _ = require('lodash');
@@ -15,11 +17,12 @@ const _ = require('lodash');
 const CONTENT_CLASSNAMES = 'col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1';
 
 class Article extends React.Component {
-  renderEdit () {
+  renderEdit() {
     // TODO: add tags
     // TODO: add form
     // TODO: disable changing uri
     const article = this.props.article;
+    const tags = article.tags || [];
 
     let action = '/admin/post';
 
@@ -37,13 +40,20 @@ class Article extends React.Component {
                 <div className={`btn-group`}>
                   <button type="submit" className="btn btn-primary btn-sm">Save</button>
                 </div>
+
+                <div className={`input-group ${CONTENT_CLASSNAMES}`}>
+                  <span className="input-group-addon">Tags</span>
+                  <input type="text" className="form-control" placeholder="tags..." defaultValue={tags.join(',')} name="tags"/>
+                </div>
+
                 <div className={`input-group ${CONTENT_CLASSNAMES}`}>
                   <span className="input-group-addon">URI</span>
-                  <input type="text" className="form-control" placeholder="something" defaultValue={article.uri} name="uri" />
+                  <input type="text" className="form-control" placeholder="enter-a-uri" defaultValue={article.uri} name="uri"/>
                 </div>
 
                 <div className={`checkbox ${CONTENT_CLASSNAMES}`}>
-                  <label><input type="checkbox" defaultChecked={article.published} name="published" /> Published</label>
+                  <label><input type="checkbox" defaultChecked={article.published} name="published"/>
+                    Published</label>
                 </div>
               </div>
               <hr/>
@@ -62,17 +72,20 @@ class Article extends React.Component {
       </Layout>
     );
   }
-  renderLive () {
+  renderLive() {
     const html = {
       __html: toHtml(this.props.article.body || '')
     };
 
     return (
       <Layout title={this.props.article.hed}>
-        <Header title={this.props.article.hed} subtitle={this.props.article.dek} />
+        <Header title={this.props.article.hed} subtitle={this.props.article.dek}/>
         <article>
           <div className="container">
             <div className="row">
+              <div className={CONTENT_CLASSNAMES}>
+                <TagList tags={this.props.article.tags}/>
+              </div>
               <div className={CONTENT_CLASSNAMES} dangerouslySetInnerHTML={html}></div>
             </div>
           </div>
@@ -82,10 +95,14 @@ class Article extends React.Component {
     );
   }
 
-  render () {
-    return this.props.isLive ? this.renderLive() : this.renderEdit();
+  render() {
+    return this.props.isLive
+      ? this.renderLive()
+      : this.renderEdit();
   }
 }
 
-Article.defaultProps = { isLive: true };
+Article.defaultProps = {
+  isLive: true
+};
 module.exports = Article;
