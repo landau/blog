@@ -17,6 +17,11 @@ class Tag extends React.Component {
 
 class TagList extends React.Component {
   render() {
+
+    if (!this.props.tags || !this.props.tags.length) {
+      return null;
+    }
+    
     const tags = this.props.tags.map((t) => <Tag tag={t} key={t}/>);
 
     return (
