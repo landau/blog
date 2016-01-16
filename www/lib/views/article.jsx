@@ -85,8 +85,15 @@ class Article extends React.Component {
             <div className="row">
               <div className={CONTENT_CLASSNAMES}>
                 <TagList tags={this.props.article.tags}/>
+                <hr/>
               </div>
+
               <div className={CONTENT_CLASSNAMES} dangerouslySetInnerHTML={html}></div>
+
+              <div className={CONTENT_CLASSNAMES}>
+                <hr/>
+                <TagList tags={this.props.article.tags}/>
+              </div>
             </div>
           </div>
         </article>

@@ -20,14 +20,12 @@ class TagList extends React.Component {
     const tags = this.props.tags.map((t) => <Tag tag={t} key={t}/>);
 
     return (
-      <div>
-
-        <ul className="nav nav-pills" role="tablist">
-          <li><h3>Tags</h3></li>
-          {tags}
-        </ul>
-        <hr/>
-      </div>
+      <ul className="nav nav-pills" role="tablist">
+        <li>
+          <h4>Tags</h4>
+        </li>
+        {tags}
+      </ul>
     );
   }
 }

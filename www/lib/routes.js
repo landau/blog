@@ -12,30 +12,52 @@ internals.index = (req, reply) => {
   const MAX_PAGE = 4; // TODO: ENV VAR
   const page = req.query.page || 1;
   const SERVICE_URL = req.server.app.config.serviceurl;
-  let url = `${SERVICE_URL}/articles/published/latest?limit=${MAX_PAGE}`;
+
+  let articlesUrl = `${SERVICE_URL}/articles/published/latest?limit=${MAX_PAGE}`;
+
+  if (!req.query.live) {
+    articlesUrl = `${SERVICE_URL}/articles?limit=${MAX_PAGE}`;
+  }
 
   if (P.num(page) && page > 1) { // base site page is 1, no need to add skip
     // The site's page base is 1 and api is 0, therefore `page - 1`
-    url += `&skip=${MAX_PAGE * (page - 1)}`;
+    articlesUrl += `&skip=${MAX_PAGE * (page - 1)}`;
   }
 
-  log.info(url);
 
-  const opts = {
-    url: url,
+  const articleOpts = {
+    url: articlesUrl,
     json: true
   };
 
+  const tagsOpts = {
+    url: `${SERVICE_URL}/tags?published=${req.query.live}`,
+    json: true
+  };
+
+  log.info(articleOpts.url);
+  log.info(tagsOpts.url);
+
+  const promises = [
+    request(articleOpts),
+    request(tagsOpts)
+  ];
+
   // TODO: Handle empty collection
-  request(opts).then((result) => {
+  Promise.all(promises)
+    .then((results) => {
+      const articleResult = results[0];
+      const tagsResult = results[1];
+
       const NEXT_PAGE = page + 1;
-      const hasNextPage = result.total > MAX_PAGE * (NEXT_PAGE - 1);
+      const hasNextPage = articleResult.total > MAX_PAGE * (NEXT_PAGE - 1);
 
       reply.view('index', {
-        articles: result.data,
+        articles: articleResult.data,
         nextPage: NEXT_PAGE,
         hasNextPage: hasNextPage,
-        isLive: (req.query || {}).live
+        isLive: req.query.live,
+        tags: tagsResult.data
       });
     })
     .catch(reply);

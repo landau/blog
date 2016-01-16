@@ -50,6 +50,19 @@ describe('Integration: Routes', () => {
         })
         .reply(200, response);
 
+      const tagsResponse = {
+        page: 1,
+        total: 2,
+        data: ['a', 'b']
+      };
+
+      nock(server.app.config.serviceurl)
+        .get('/tags')
+        .query({
+          published: true
+        })
+        .reply(200, tagsResponse);
+
       server.inject({
         url: '/'
       }, (res) => {
@@ -78,6 +91,19 @@ describe('Integration: Routes', () => {
         })
         .reply(200, response);
 
+      const tagsResponse = {
+        page: 1,
+        total: 2,
+        data: ['a', 'b']
+      };
+
+      nock(server.app.config.serviceurl)
+        .get('/tags')
+        .query({
+          published: true
+        })
+        .reply(200, tagsResponse);
+
       server.inject({
         url: '/?page=2'
       }, (res) => {
@@ -101,11 +127,24 @@ describe('Integration: Routes', () => {
       };
 
       nock(server.app.config.serviceurl)
-        .get('/articles/published/latest')
+        .get('/articles')
         .query({
           limit: 4
         })
         .reply(200, response);
+
+      const tagsResponse = {
+        page: 1,
+        total: 2,
+        data: ['a', 'b']
+      };
+
+      nock(server.app.config.serviceurl)
+        .get('/tags')
+        .query({
+          published: false
+        })
+        .reply(200, tagsResponse);
 
       server.inject({
         url: '/admin'
@@ -180,7 +219,7 @@ describe('Integration: Routes', () => {
       const nockPayload = {
         hed: 'hi',
         body: 'yo',
-        tags: ['a','b','c']
+        tags: ['a', 'b', 'c']
       };
 
       nock(server.app.config.serviceurl)
