@@ -45,8 +45,8 @@ class Head extends React.Component {
     return title;
   }
 
-  render() {
-    return (
+  render () {
+    return(
       <head>
         <meta charSet="utf-8"/>
         <meta httpEquiv="X-UA-Compatible" content="IE=edge"/>
@@ -71,7 +71,7 @@ class Layout extends React.Component {
   render() {
     return (
       <html lang="en">
-        <Head title={this.props.title} />
+        <Head title={this.props.title}/>
         <body>
           <Nav/>
           {this.props.children}
