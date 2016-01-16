@@ -4,6 +4,21 @@ const request = require('request-promise');
 const P = require('predicate');
 const Joi = require('joi');
 const _ = require('lodash');
+const Boom = require('boom');
+
+function replyBoom(reply) {
+  reply(Boom.create.apply(Boom, _.rest(arguments)));
+}
+
+function catchReply(reply) {
+  return (err) => {
+    if (err.isBoom) {
+      return reply(err);
+    }
+
+    replyBoom(reply, err.statusCode, err.message);
+  };
+}
 
 let internals = {};
 
@@ -62,7 +77,7 @@ internals.index = (req, reply) => {
         tags: tagsResult.data
       });
     })
-    .catch(reply);
+    .catch(catchReply(reply));
 };
 
 internals.getPost = (req, reply) => {
@@ -80,7 +95,7 @@ internals.getPost = (req, reply) => {
         isLive: true
       });
     })
-    .catch(reply);
+    .catch(catchReply(reply));
 };
 
 internals.newPost = (req, reply) => {
@@ -104,7 +119,7 @@ internals.editPost = (req, reply) => {
         isLive: false
       });
     })
-    .catch(reply);
+    .catch(catchReply(reply));
 };
 
 internals.save = (req, reply) => {
@@ -137,7 +152,23 @@ internals.save = (req, reply) => {
         article: article
       }).code(201);
    })
-   .catch(reply);
+   .catch(catchReply(reply));
+};
+
+internals.error = (req, reply) => {
+  if (req.response.isBoom) {
+    const err = req.response;
+    const errName = err.output.payload.error;
+    const statusCode = err.output.payload.statusCode;
+
+    return reply.view('status-page', {
+        statusCode: statusCode,
+        message: errName
+      })
+      .code(statusCode);
+  }
+
+  reply.continue();
 };
 
 module.exports = (server) => {
@@ -266,6 +297,8 @@ module.exports = (server) => {
       tags: ['article', 'post', 'edit', 'update']
     }
   });
+
+  server.ext('onPreResponse', internals.error);
 
   return server;
 };

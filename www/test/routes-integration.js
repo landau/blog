@@ -310,4 +310,23 @@ describe('Integration: Routes', () => {
       });
     });
   });
+
+  describe('error page', function() {
+    it('should reply with html', (done) => {
+      nock(server.app.config.serviceurl)
+        .get(`/articles/published?uri=${fixtures.publishedArticle.uri}`)
+        .reply(404, { message: 'Not Found' });
+
+      server.inject({
+        url: `/post/${fixtures.publishedArticle.uri}`
+      }, (res) => {
+        if (res.statusCode !== 404) {
+          return done(new Error(`Expected a 404. Got ${res.statusCode} ${JSON.stringify(res.result.message)}`));
+        }
+        res.result.should.be.a.string;
+        /404/.test(res.result).should.be.true; // Contains text indicating the status code
+        done();
+      });
+    });
+  });
 });
