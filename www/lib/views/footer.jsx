@@ -26,10 +26,7 @@ class Footer extends React.Component {
           <div className="row">
             <div className="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
               <p className="text-center"></p>
-              <ul className="list-inline text-center">
-                <Badge href="http://www.github.com/landau" icon="github"/>
-                <Badge href="https://www.linkedin.com/in/trevor-landau-493a481b" icon="linkedin"/>
-              </ul>
+              
               <p className="copyright text-muted">
                 <a href="/">Home</a> | Copyright &copy; Trevor Landau {moment().format('YYYY')}
               </p>

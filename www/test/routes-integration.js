@@ -277,11 +277,11 @@ describe('Integration: Routes', () => {
         payload: payload
       }, (res) => {
 
-        if (res.statusCode !== 302) {
-          return done(new Error(`Expected a 302. Got ${res.statusCode} ${JSON.stringify(res.result.message)}`));
+        if (res.statusCode !== 201) {
+          return done(new Error(`Expected a 201. Got ${res.statusCode} ${JSON.stringify(res.result.message)}`));
         }
 
-        res.headers.location.should.equal(`/admin/post/${fixtures.article.id}`);
+        res.result.should.be.a.string;
 
         done();
       });
@@ -301,12 +301,11 @@ describe('Integration: Routes', () => {
         method: 'POST',
         payload: payload
       }, (res) => {
-        if (res.statusCode !== 302) {
-          return done(new Error(`Expected a 302. Got ${res.statusCode} ${JSON.stringify(res.result.message)}`));
+        if (res.statusCode !== 201) {
+          return done(new Error(`Expected a 201. Got ${res.statusCode} ${JSON.stringify(res.result.message)}`));
         }
 
-        res.headers.location.should.equal(`/admin/post/${fixtures.article.id}`);
-
+        res.result.should.be.a.string;
         done();
       });
     });

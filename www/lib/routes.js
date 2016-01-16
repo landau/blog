@@ -46,7 +46,6 @@ internals.index = (req, reply) => {
     request(tagsOpts)
   ];
 
-  // TODO: Handle empty collection
   Promise.all(promises)
     .then((results) => {
       const articleResult = results[0];
@@ -134,7 +133,9 @@ internals.save = (req, reply) => {
 
   // TODO change to redirect page
   request[opts.method.toLowerCase()](opts).then((article) => {
-     reply.redirect(`/admin/post/${article.id}`);
+      reply.view('article-created', {
+        article: article
+      }).code(201);
    })
    .catch(reply);
 };
@@ -211,6 +212,11 @@ module.exports = (server) => {
     method: 'GET',
     path: '/post/{uri}',
     config: {
+      validate: {
+        query: {
+          live: Joi.boolean().default(true).invalid(false)
+        }
+      },
       handler: internals.getPost,
       tags: ['article', 'post']
     }
@@ -231,6 +237,11 @@ module.exports = (server) => {
     method: 'GET',
     path: '/admin/post/{id}',
     config: {
+      validate: {
+        query: {
+          live: Joi.boolean().default(false)
+        }
+      },
       handler: internals.editPost,
       tags: ['article', 'post', 'edit']
     }

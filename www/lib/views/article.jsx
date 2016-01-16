@@ -18,9 +18,6 @@ const CONTENT_CLASSNAMES = 'col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1';
 
 class Article extends React.Component {
   renderEdit() {
-    // TODO: add tags
-    // TODO: add form
-    // TODO: disable changing uri
     const article = this.props.article;
     const tags = article.tags || [];
 
@@ -48,7 +45,7 @@ class Article extends React.Component {
 
                 <div className={`input-group ${CONTENT_CLASSNAMES}`}>
                   <span className="input-group-addon">URI</span>
-                  <input type="text" className="form-control" placeholder="enter-a-uri" defaultValue={article.uri} name="uri"/>
+                  <input type="text" className="form-control" placeholder="enter-a-uri" defaultValue={article.uri} name="uri" disabled={article.id !== null}/>
                 </div>
 
                 <div className={`checkbox ${CONTENT_CLASSNAMES}`}>
