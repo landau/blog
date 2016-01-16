@@ -37,7 +37,7 @@ class ArticlePreview extends React.Component {
           </h3>
         </a>
         <p className="post-meta">
-          Posted on
+          Posted on&nbsp;
           {moment(this.props.article.modifiedAt).format('MMMM D, YYYY')}
         </p>
       </div>
@@ -93,7 +93,7 @@ class Index extends React.Component {
             <div className={CONTENT_CLASSNAMES}>
               <ArticlePreviewList {...this.props}/>
               <Pager hasNextPage={this.props.hasNextPage} nextPage={this.props.nextPage}/>
-            </div>            
+            </div>
 
             <div className={CONTENT_CLASSNAMES}>
               <hr/>

@@ -24,6 +24,9 @@ internals.index = (req, reply) => {
     articlesUrl += `&skip=${MAX_PAGE * (page - 1)}`;
   }
 
+  if (req.params.tags) {
+    articlesUrl += `&tags=${req.params.tags}`;
+  }
 
   const articleOpts = {
     url: articlesUrl,
@@ -164,7 +167,26 @@ module.exports = (server) => {
         }
       },
       handler: internals.index,
-      tags: ['root', 'home']
+      tags: ['root', 'index']
+    }
+  });
+
+  // -- posts found with {tags}
+  server.route({
+    method: 'GET',
+    path: '/tags/{tags}',
+    config: {
+      validate: {
+        params: {
+          tags: Joi.string() // TODO: more strict?
+        },
+        query: {
+          page: Joi.number().integer().positive().optional().min(1),
+          live: Joi.boolean().default(true).invalid(false)
+        }
+      },
+      handler: internals.index,
+      tags: ['root', 'index', 'tags']
     }
   });
 
@@ -180,7 +202,7 @@ module.exports = (server) => {
         }
       },
       handler: internals.index,
-      tags: ['root', 'home', 'admin']
+      tags: ['root', 'index', 'admin']
     }
   });
 

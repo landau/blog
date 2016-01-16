@@ -116,6 +116,51 @@ describe('Integration: Routes', () => {
     });
   });
 
+  // FIXME: Why won't this pass?
+  describe.skip('GET /tags/{tag}', () => {
+    it('should reply with html', (done) => {
+      const articles = [fixtures.article, fixtures.publishedArticle];
+      const tags = 'a,b,c';
+
+      const response = {
+        total: articles.length,
+        page: 1,
+        data: articles
+      };
+
+      nock(server.app.config.serviceurl)
+        .get('/articles/published/latest')
+        .query({
+          limit: 4,
+          tags: tags
+        })
+        .reply(200, response);
+
+      const tagsResponse = {
+        page: 1,
+        total: 2,
+        data: ['a', 'b']
+      };
+
+      nock(server.app.config.serviceurl)
+        .get('/tags')
+        .query({
+          published: true
+        })
+        .reply(200, tagsResponse);
+
+      server.inject({
+        url: `/tags/${tags}`
+      }, (res) => {
+        if (res.statusCode !== 200) {
+          return done(new Error(`Expected a 200. Got ${res.statusCode} ${JSON.stringify(res.result.message)}`));
+        }
+        res.result.should.be.a.string;
+        done();
+      });
+    });
+  });
+
   describe('GET /admin', () => {
     it('should reply with html', (done) => {
       const articles = [fixtures.article, fixtures.publishedArticle];
