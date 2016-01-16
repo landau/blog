@@ -275,6 +275,8 @@ internals.odm = function(db) {
     };
 
     Model.schema = baseSchema;
+
+    Model._collection.createIndex({ id: -1, createdAt: -1 }, require('assert').ifError);
     return Model;
   }
 
