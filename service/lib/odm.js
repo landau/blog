@@ -83,10 +83,6 @@ internals.odm = function(db) {
           query = {};
         }
 
-        if (!limit && !skip) {
-          limit = Infinity;
-        }
-
         if (!skip) {
           skip = 0;
         }
