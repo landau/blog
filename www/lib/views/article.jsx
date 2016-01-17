@@ -45,7 +45,7 @@ class Article extends React.Component {
 
                 <div className={`input-group ${CONTENT_CLASSNAMES}`}>
                   <span className="input-group-addon">URI</span>
-                  <input type="text" className="form-control" placeholder="enter-a-uri" defaultValue={article.uri} name="uri" disabled={article.id !== null}/>
+                  <input type="text" className="form-control" placeholder="enter-a-uri" defaultValue={article.uri} name="uri" disabled={article.uri !== null}/>
                 </div>
 
                 <div className={`checkbox ${CONTENT_CLASSNAMES}`}>
