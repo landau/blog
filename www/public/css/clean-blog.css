@@ -372,18 +372,11 @@ img::-moz-selection {
 body {
   webkit-tap-highlight-color: #0085a1;
 }
-
-.nav.nav-pills h3 {
-
-}
-
 .nav>li>a {
   padding: 10px 5px;
 }
-
 .nav-pills>li>h4 {
   font-family: "Open Sans", "Roboto", monospace;
-
 }
 .nav-pills>li>a>.badge {
   margin-left: 3px;
@@ -393,4 +386,7 @@ body {
   font-weight: 100;
   padding: 6px 15px;
   letter-spacing: 2px;
+}
+article li a {
+  text-decoration: underline;
 }
