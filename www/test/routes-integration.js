@@ -46,7 +46,7 @@ describe('Integration: Routes', () => {
       nock(server.app.config.serviceurl)
         .get('/articles/published/latest')
         .query({
-          limit: 4
+          limit: server.app.config.pagination.index
         })
         .reply(200, response);
 
@@ -86,8 +86,8 @@ describe('Integration: Routes', () => {
       nock(server.app.config.serviceurl)
         .get('/articles/published/latest')
         .query({
-          skip: 4,
-          limit: 4
+          skip: server.app.config.pagination.index,
+          limit: server.app.config.pagination.index
         })
         .reply(200, response);
 
@@ -174,7 +174,7 @@ describe('Integration: Routes', () => {
       nock(server.app.config.serviceurl)
         .get('/articles')
         .query({
-          limit: 4
+          limit: server.app.config.pagination.index
         })
         .reply(200, response);
 
