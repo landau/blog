@@ -116,7 +116,7 @@ internals.editPost = (req, reply) => {
   request(opts).then((article) => {
       reply.view('article', {
         article: article,
-        isLive: false
+        isLive: req.query.live
       });
     })
     .catch(catchReply(reply));
