@@ -8,4 +8,5 @@ NPM=`which npm`
 #$NPM test
 
 cd $PWD/www
+$NPM install
 $NPM test
