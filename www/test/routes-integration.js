@@ -3,6 +3,7 @@
 const chai = require('chai');
 chai.should();
 const nock = require('nock');
+const slug = require('slug');
 
 const app = require('../lib');
 
@@ -258,13 +259,15 @@ describe('Integration: Routes', () => {
       const payload = {
         hed: 'hi',
         body: 'yo',
-        tags: 'a,b,c'
+        tags: 'a,b,c',
+        uri: 'foo to the bar'
       };
 
       const nockPayload = {
         hed: 'hi',
         body: 'yo',
-        tags: ['a', 'b', 'c']
+        tags: ['a', 'b', 'c'],
+        uri: slug(payload.uri)
       };
 
       nock(server.app.config.serviceurl)
@@ -290,7 +293,7 @@ describe('Integration: Routes', () => {
 
   describe('PUT /admin/post', () => {
     it('should update an existing article', (done) => {
-      const payload = fixtures.article;
+      let payload = fixtures.article;
 
       nock(server.app.config.serviceurl)
         .put(`/articles/${payload.id}`, payload)

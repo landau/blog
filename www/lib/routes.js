@@ -5,6 +5,7 @@ const P = require('predicate');
 const Joi = require('joi');
 const _ = require('lodash');
 const Boom = require('boom');
+const slug = require('slug');
 
 function replyBoom(reply) {
   reply(Boom.create.apply(Boom, _.rest(arguments)));
@@ -128,6 +129,10 @@ internals.save = (req, reply) => {
 
   if (!article.published) {
     article.published = false;
+  }
+
+  if (article.uri) {
+    article.uri = slug(article.uri);
   }
 
   if (typeof article.tags === 'string') {
