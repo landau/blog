@@ -1,7 +1,7 @@
 'use strict';
 
 const chai = require('chai');
-//const should = chai.should();
+const should = chai.should();
 chai.use(require('sinon-chai'));
 //const sinon = require('sinon');
 const _ = require('lodash');
@@ -78,7 +78,8 @@ describe('Integration: Routes', () => {
       let payload = {
         hed: 'foo',
         body: 'bar',
-        tags: ['foo', 'bar']
+        tags: ['foo', 'bar'],
+        uri: 'foo-baz'
       };
 
       Promise.resolve(payload)
@@ -91,6 +92,24 @@ describe('Integration: Routes', () => {
           done();
         })
         .catch(done);
+    });
+
+    it('should fail to POST an article with a duplicate uri', (done) => {
+      let payload = {
+        hed: 'foo',
+        body: 'bar',
+        tags: ['foo', 'bar'],
+        uri: 'foo-baz'
+      };
+
+      Promise.resolve(payload)
+        .then(create(server))
+        .then(() => done(new Error('should not get here.')))
+        .catch((err) => {
+          should.exist(err);
+          err.message.should.match(/409/);
+          done();
+        });
     });
 
     it('should update an article', (done) => {
@@ -208,7 +227,7 @@ describe('Integration: Routes', () => {
     });
 
     it('should find articles with specifed tags with multi docs have different tags', function(done) {
-      const knownArticles =  [article];
+      const knownArticles = [article];
       const tag = 'bar';
 
       Promise.resolve(`/articles?tags=${tag}`)

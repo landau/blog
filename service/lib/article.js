@@ -2,6 +2,7 @@
 
 const Odm = require('./odm');
 const Joi = Odm.Joi;
+const P = require('predicate');
 
 const COLLECTION_NAME = 'articles';
 
@@ -17,6 +18,11 @@ internals.schema = {
 
 module.exports = (odm) => {
   let Article = odm.createModel(COLLECTION_NAME, internals.schema);
+
+  Article.hasUri = (uri) => {
+    return Article.findOne({ uri: uri }).then(P.exists);
+  };
+
   return Article;
 };
 

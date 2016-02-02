@@ -59,7 +59,21 @@ internals.save = (request, reply) => {
   const Article = request.server.app.Article;
   const payload = request.payload;
   let article = new Article(payload);
-  reply(article.save().then(_.property('fields'))).code(201);
+
+  let p = Promise.resolve();
+
+  if (article.fields.uri) {
+    p = Article.hasUri(article.fields.uri)
+      .then((hasUri) => {
+        if (hasUri) {
+          throw boom.conflict(`Uri ${article.uri} already exists`, article.fields);
+        }
+      });
+  }
+
+  p = p.then(() => article.save()).then(_.property('fields'));
+
+  reply(p).code(201);
 };
 
 internals.update = (request, reply) => {
