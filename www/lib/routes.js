@@ -8,7 +8,7 @@ const Boom = require('boom');
 const slug = require('slug');
 
 function replyBoom(reply) {
-  reply(Boom.create.apply(Boom, _.rest(arguments)));
+  reply(Boom.create.apply(Boom, _.tail(arguments)));
 }
 
 function catchReply(reply) {
