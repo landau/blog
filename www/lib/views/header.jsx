@@ -21,7 +21,7 @@ class Header extends React.Component {
       <div className="site-heading">
         <h1>{this.props.title}</h1>
         <hr className="small"/>
-        <span className="subheading">{this.props.subtitle}</span>
+        <h2 className="subheading">{this.props.subtitle}</h2>
       </div>
     );
   }
