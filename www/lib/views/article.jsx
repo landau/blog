@@ -82,7 +82,14 @@ class Article extends React.Component {
             <div className="row">
               <div className={CONTENT_CLASSNAMES}>
                 <TagList tags={this.props.article.tags}/>
-                <hr/>
+              </div>
+              <div className={CONTENT_CLASSNAMES}>
+                <div className="well well-sm text-center" style={{backgroundColor: 'transparent', border: 'none'}}>
+                  <small><em>
+                    <span className="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+                    &nbsp;Posted On: {moment(this.props.article.createdAt).format('MMM Do, YYYY')}
+                  </em></small>
+                </div>
               </div>
 
               <div className={CONTENT_CLASSNAMES} dangerouslySetInnerHTML={html}></div>
@@ -100,9 +107,7 @@ class Article extends React.Component {
   }
 
   render() {
-    return this.props.isLive
-      ? this.renderLive()
-      : this.renderEdit();
+    return this.props.isLive ? this.renderLive() : this.renderEdit();
   }
 }
 
