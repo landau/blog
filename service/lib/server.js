@@ -15,7 +15,7 @@ const server = new Hapi.Server({
 });
 
 server.app = {
-  version: require('../package.json').version,
+  version: require('../../version.json'),
   config: config,
   logger: logging.logger
 };
