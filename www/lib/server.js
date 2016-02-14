@@ -58,7 +58,7 @@ if (config.env !== 'production') {
 
     server.route({
       method: 'GET',
-      path: '/{param*}', // Does this need to be /public?
+      path: '/{param*}',
       handler: {
         directory: {
           path: 'public'

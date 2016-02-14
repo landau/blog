@@ -76,6 +76,7 @@ class Layout extends React.Component {
           <Nav/>
           {this.props.children}
         </body>
+        <script src="/js/index.js"></script>
       </html>
     );
   }
