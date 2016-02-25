@@ -9,7 +9,7 @@ onDomReady(() => {
   var uri = document.querySelector('input[name=uri]');
   console.log(hed, uri);
 
-  document.addEventListener('keydown', (e) => {
+  document.addEventListener('keyup', (e) => {
     if (e.target === hed) {
       uri.value = hed.value.replace(/\W+/g, '-').toLowerCase();
     }
