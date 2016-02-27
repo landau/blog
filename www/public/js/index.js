@@ -11,7 +11,7 @@ onDomReady(() => {
 
   document.addEventListener('keyup', (e) => {
     if (e.target === hed) {
-      uri.value = hed.value.replace(/\W+/g, '-').toLowerCase();
+      uri.value = hed.value.replace(/[\.,]/g, '').trim().replace(/\W+/g, '-').toLowerCase();
     }
   });
 });
