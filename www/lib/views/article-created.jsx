@@ -31,6 +31,10 @@ class ArticleCreated extends React.Component {
                 <div className="alert alert-info" role="alert">
                   <a href={`/admin/post/${article.id}`} className="alert-link">Edit this post</a>
                 </div>
+                <hr/>
+                <div className="alert alert-info" role="alert">
+                  <a href={`/admin/post`} className="alert-link">New post</a>
+                </div>
               </div>
 
               <div className={CONTENT_CLASSNAMES}>
