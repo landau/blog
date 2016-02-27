@@ -26,6 +26,10 @@ class ArticlePreview extends React.Component {
       url = `/admin/post/${this.props.article.id}`;
     }
 
+    const tags = (this.props.article.tags || []).map(function(tag) {
+      return <span className="label label-default">{tag}</span>;
+    });
+
     return (
       <div className="post-preview">
         <a href={url}>
@@ -39,6 +43,8 @@ class ArticlePreview extends React.Component {
         <p className="post-meta">
           Posted on&nbsp;
           {moment(this.props.article.modifiedAt).format('MMMM D, YYYY')}
+          &nbsp;|&nbsp;
+          {tags}
         </p>
       </div>
     );
@@ -52,7 +58,6 @@ class ArticlePreviewList extends React.Component {
         'hr' + article.props.article.id
       } />); // separate articles by hr
     }, []);
-
     return (
       <div>
         {articles}

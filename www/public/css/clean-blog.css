@@ -228,6 +228,9 @@ hr.small {
   text-decoration: none;
   color: #404040;
 }
+.post-preview > .post-meta > .label {
+  margin: 0 3px;
+}
 .post-preview > .post-meta > a:hover, .post-preview > .post-meta > a:focus {
   color: #0085a1;
   text-decoration: underline;
