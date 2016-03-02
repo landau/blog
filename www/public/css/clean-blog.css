@@ -17,7 +17,7 @@ p a {
   text-decoration: underline;
 }
 blockquote p {
-  line-height: 1;
+  line-height: 1.5;
 }
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
